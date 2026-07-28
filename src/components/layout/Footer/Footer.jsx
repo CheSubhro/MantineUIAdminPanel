@@ -7,7 +7,7 @@ export default function Footer() {
     const currentYear = new Date().getFullYear();
 
     return (
-        <Group h="100%" px="md" justify="space-between" bg="white" style={{ borderTop: '1px solid #eaeaea' }}>
+        <Group h="100%" px="md" justify="space-between" bg="var(--mantine-color-body)" style={{ borderTop: '1px solid #eaeaea' }}>
             <Text size="sm" c="dimmed">
                 © {currentYear} <Anchor href="#" size="sm" fw={500}>Admin Panel Inc</Anchor>. All rights reserved.
             </Text>

@@ -31,7 +31,7 @@ const MainLayout = ({ children }) => {
             </AppShell.Navbar>
 
             {/* Main Content Area */}
-            <AppShell.Main style={{ backgroundColor: '#f8f9fa', minHeight: '100vh' }}>
+            <AppShell.Main style={{ backgroundColor: 'var(--mantine-color-body)', color: 'var(--mantine-color-text)', minHeight: '100vh' }}>
                 {children}
             </AppShell.Main>
 

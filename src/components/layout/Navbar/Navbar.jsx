@@ -1,12 +1,12 @@
 
 import { Group, Burger, Text, ActionIcon, Avatar, Menu, Box } from '@mantine/core';
 import { IconBell, IconSettings, IconLogout, IconUser } from '@tabler/icons-react';
-import { Tooltip, Badge } from '../../common/index';
+import { Tooltip, Badge, ThemeToggle } from '../../common/index';
 
 export default function Navbar({ opened, toggle, user = { name: 'Admin User', role: 'Super Admin' } }) {
 
     return (
-        <Group h="100%" px="md" justify="space-between" bg="white" style={{ borderBottom: '1px solid #eaeaea' }}>
+        <Group h="100%" px="md" justify="space-between" bg="var(--mantine-color-body)" style={{ borderBottom: '1px solid #eaeaea' }}>
             {/* Left Section: Burger & App Title */}
             <Group>
                 <Burger opened={opened} onClick={toggle} hiddenFrom="sm" size="sm" />
@@ -15,6 +15,9 @@ export default function Navbar({ opened, toggle, user = { name: 'Admin User', ro
 
             {/* Right Section: Notifications, Tooltips & User Profile */}
             <Group gap="md">
+                <Tooltip label="Toggle Theme">
+                    <ThemeToggle />
+                </Tooltip>
                 {/* Notification Icon with Tooltip & Badge */}
                 <Tooltip label="Notifications">
                     <ActionIcon variant="subtle" size="lg" radius="xl" aria-label="Notifications" style={{ position: 'relative' }}>
@@ -32,7 +35,6 @@ export default function Navbar({ opened, toggle, user = { name: 'Admin User', ro
                             <Avatar src={user.avatar} radius="xl" size="sm" color="blue">
                                 {user.name.charAt(0)}
                             </Avatar>
-                            {/* div এর বদলে Mantine এর Box কম্পোনেন্ট ব্যবহার করা হয়েছে */}
                             <Box style={{ lineHeight: 1 }} visibleFrom="sm">
                                 <Text size="sm" fw={500}>{user.name}</Text>
                                 <Text size="xs" c="dimmed">{user.role}</Text>

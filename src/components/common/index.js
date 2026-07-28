@@ -11,3 +11,4 @@ export { default as EmptyState } from './EmptyState/EmptyState';
 export { default as ConfirmModal } from './ConfirmModal/ConfirmModal';
 export { default as Pagination } from './Pagination/Pagination';
 export { default as CustomSelect } from './Select/CustomSelect';
+export { default as ThemeToggle } from './ThemeToggle/ThemeToggle';
