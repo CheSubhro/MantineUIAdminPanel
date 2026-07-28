@@ -11,7 +11,7 @@ import {
 import { Tooltip, Button } from '../../common/index';
 
 export default function Sidebar({ activeRoute = 'dashboard', onNavigate, onLogout }) {
-    
+
     const menuItems = [
         { id: 'dashboard', label: 'Dashboard', icon: IconDashboard },
         { id: 'users', label: 'Users Management', icon: IconUsers },
@@ -21,7 +21,15 @@ export default function Sidebar({ activeRoute = 'dashboard', onNavigate, onLogou
     ];
 
     return (
-        <Stack h="100%" justify="space-between" p="md">
+        <Stack
+            h="100%"
+            justify="space-between"
+            p="md"
+            style={(theme) => ({
+                borderRight: '1px solid var(--mantine-color-default-border)',
+                backgroundColor: 'var(--mantine-color-body)'
+            })}
+        >
             {/* Top Menu Links */}
             <Stack gap="xs">
                 <Text size="xs" fw={700} c="dimmed" tt="uppercase" mb="xs">
@@ -40,10 +48,14 @@ export default function Sidebar({ activeRoute = 'dashboard', onNavigate, onLogou
                                 px="md"
                                 style={(theme) => ({
                                     borderRadius: theme.radius.sm,
-                                    backgroundColor: isActive ? theme.colors.blue[0] : 'transparent',
-                                    color: isActive ? theme.colors.blue[7] : theme.colors.gray[7],
+                                    backgroundColor: isActive
+                                        ? (theme.colorScheme === 'dark' ? theme.colors.dark[5] : theme.colors.blue[0])
+                                        : 'transparent',
+                                    color: isActive
+                                        ? (theme.colorScheme === 'dark' ? theme.white : theme.colors.blue[7])
+                                        : 'var(--mantine-color-text)',
                                     '&:hover': {
-                                        backgroundColor: theme.colors.gray[0],
+                                        backgroundColor: theme.colorScheme === 'dark' ? theme.colors.dark[6] : theme.colors.gray[0],
                                     },
                                 })}
                             >
@@ -58,7 +70,7 @@ export default function Sidebar({ activeRoute = 'dashboard', onNavigate, onLogou
             </Stack>
 
             {/* Bottom Logout Button */}
-            <Stack pt="md" style={{ borderTop: '1px solid #eaeaea' }}>
+            <Stack pt="md" style={{ borderTop: '1px solid var(--mantine-color-default-border)' }}>
                 <Button
                     variant="subtle"
                     color="red"
