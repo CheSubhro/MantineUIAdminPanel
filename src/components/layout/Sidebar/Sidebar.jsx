@@ -9,15 +9,19 @@ import {
     IconChartBar
 } from '@tabler/icons-react';
 import { Tooltip, Button } from '../../common/index';
+import { useLocation, useNavigate } from 'react-router-dom';
 
-export default function Sidebar({ activeRoute = 'dashboard', onNavigate, onLogout }) {
+export default function Sidebar({ onLogout }) {
+
+    const navigate = useNavigate();
+    const location = useLocation();
 
     const menuItems = [
-        { id: 'dashboard', label: 'Dashboard', icon: IconDashboard },
-        { id: 'users', label: 'Users Management', icon: IconUsers },
-        { id: 'analytics', label: 'Analytics', icon: IconChartBar },
-        { id: 'reports', label: 'Reports', icon: IconFileText },
-        { id: 'settings', label: 'Settings', icon: IconSettings },
+        { id: 'dashboard', label: 'Dashboard', path: '/dashboard', icon: IconDashboard },
+        { id: 'users', label: 'Users Management', path: '/users', icon: IconUsers },
+        { id: 'analytics', label: 'Analytics', path: '/analytics', icon: IconChartBar },
+        { id: 'reports', label: 'Reports', path: '/reports', icon: IconFileText },
+        { id: 'settings', label: 'Settings', path: '/settings', icon: IconSettings },
     ];
 
     return (
@@ -38,12 +42,12 @@ export default function Sidebar({ activeRoute = 'dashboard', onNavigate, onLogou
 
                 {menuItems.map((item) => {
                     const Icon = item.icon;
-                    const isActive = activeRoute === item.id;
+                    const isActive = location.pathname === item.path;
 
                     return (
                         <Tooltip key={item.id} label={item.label} position="right" disabled={true}>
                             <UnstyledButton
-                                onClick={() => onNavigate && onNavigate(item.id)}
+                                onClick={() => navigate(item.path)}
                                 py="xs"
                                 px="md"
                                 style={(theme) => ({
