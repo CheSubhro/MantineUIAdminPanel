@@ -1,11 +1,26 @@
 
-import { VStack, Text, Icon } from '@chakra-ui/react';
-import { FiInbox } from 'react-icons/fi'; // react-icons install 
+import { Stack, Text, Button, Center } from '@mantine/core';
+import { IconInbox } from '@tabler/icons-react';
 
-const EmptyState = ({ message = "No Data Found" }) => (
-    <VStack py={10} spacing={3}>
-        <Icon as={FiInbox} w={12} h={12} color="gray.400" />
-        <Text color="gray.500">{message}</Text>
-    </VStack>
-);
-export default EmptyState;
+export default function EmptyState({
+    title = "No data found",
+    description,
+    icon: Icon = IconInbox,
+    actionText,
+    onAction
+}) {
+    return (
+        <Center py="xl">
+            <Stack align="center" gap="xs">
+                <Icon size={48} stroke={1.5} color="gray" />
+                <Text fw={500} size="lg">{title}</Text>
+                {description && <Text c="dimmed" size="sm" ta="center" maw={300}>{description}</Text>}
+                {actionText && onAction && (
+                    <Button mt="md" onClick={onAction} size="sm">
+                        {actionText}
+                    </Button>
+                )}
+            </Stack>
+        </Center>
+    );
+}

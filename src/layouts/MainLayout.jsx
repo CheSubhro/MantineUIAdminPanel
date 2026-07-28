@@ -1,17 +1,45 @@
 
 import React from 'react';
-import { Flex, Box } from '@chakra-ui/react';
-import { Navbar, Footer } from '../components/layout/index'; 
+import { AppShell } from '@mantine/core';
+import { useDisclosure } from '@mantine/hooks';
+import { Navbar, Sidebar, Footer } from '../components/layout/index';
 
 const MainLayout = ({ children }) => {
+
+    const [mobileOpened, { toggle: toggleMobile }] = useDisclosure();
+    const [desktopOpened, { toggle: toggleDesktop }] = useDisclosure(true);
+
     return (
-        <Flex direction="column" minH="100vh">
-            <Navbar />
-                <Box as="main" flex="1" p={4}>
-                    {children}
-                </Box>
-            <Footer />
-        </Flex>
+        <AppShell
+            header={{ height: 60 }}
+            footer={{ height: 50 }}
+            navbar={{
+                width: 260,
+                breakpoint: 'sm',
+                collapsed: { mobile: !mobileOpened, desktop: !desktopOpened },
+            }}
+            padding="md"
+        >
+            {/* Header / Navbar */}
+            <AppShell.Header>
+                <Navbar opened={mobileOpened} toggle={toggleMobile} />
+            </AppShell.Header>
+
+            {/* Sidebar */}
+            <AppShell.Navbar>
+                <Sidebar />
+            </AppShell.Navbar>
+
+            {/* Main Content Area */}
+            <AppShell.Main style={{ backgroundColor: '#f8f9fa', minHeight: '100vh' }}>
+                {children}
+            </AppShell.Main>
+
+            {/* Footer */}
+            <AppShell.Footer>
+                <Footer />
+            </AppShell.Footer>
+        </AppShell>
     );
 };
 
