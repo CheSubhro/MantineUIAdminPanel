@@ -2,6 +2,7 @@
 import { Modal, Text, Group, Button } from '@mantine/core';
 
 export default function ConfirmModal({
+    isOpen,
     opened,
     onClose,
     onConfirm,
@@ -11,8 +12,10 @@ export default function ConfirmModal({
     cancelText = "Cancel",
     loading = false
 }) {
+    const isOpened = opened !== undefined ? opened : isOpen;
+
     return (
-        <Modal opened={opened} onClose={onClose} title={title} centered>
+        <Modal opened={isOpened} onClose={onClose} title={title} centered>
             <Text size="sm" mb="xl">{message}</Text>
             <Group justify="end">
                 <Button variant="default" onClick={onClose} disabled={loading}>{cancelText}</Button>

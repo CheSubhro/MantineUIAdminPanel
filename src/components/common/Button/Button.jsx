@@ -1,6 +1,10 @@
 
 import { Button as MantineButton } from '@mantine/core';
 
-export default function Button({ children, ...props }) {
-    return <MantineButton {...props}>{children}</MantineButton>;
+export default function Button({ children, color = 'violet', ...props }) {
+    return (
+        <MantineButton color={color} {...props}>
+            {children}
+        </MantineButton>
+    );
 }
