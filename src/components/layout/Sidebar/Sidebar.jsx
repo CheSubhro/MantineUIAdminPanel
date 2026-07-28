@@ -8,7 +8,7 @@ import {
     IconFileText,
     IconChartBar
 } from '@tabler/icons-react';
-import { Tooltip, Button } from '../index';
+import { Tooltip, Button } from '../../common/index';
 
 export default function Sidebar({ activeRoute = 'dashboard', onNavigate, onLogout }) {
     

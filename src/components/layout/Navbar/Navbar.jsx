@@ -1,8 +1,7 @@
 
-
-import { Group, Burger, Text, ActionIcon, Avatar, Menu } from '@mantine/core';
+import { Group, Burger, Text, ActionIcon, Avatar, Menu, Box } from '@mantine/core';
 import { IconBell, IconSettings, IconLogout, IconUser } from '@tabler/icons-react';
-import { Tooltip, Badge } from '../index';
+import { Tooltip, Badge } from '../../common/index';
 
 export default function Navbar({ opened, toggle, user = { name: 'Admin User', role: 'Super Admin' } }) {
 
@@ -33,10 +32,11 @@ export default function Navbar({ opened, toggle, user = { name: 'Admin User', ro
                             <Avatar src={user.avatar} radius="xl" size="sm" color="blue">
                                 {user.name.charAt(0)}
                             </Avatar>
-                            <div style={{ lineHeight: 1 }} visibleFrom="sm">
+                            {/* div এর বদলে Mantine এর Box কম্পোনেন্ট ব্যবহার করা হয়েছে */}
+                            <Box style={{ lineHeight: 1 }} visibleFrom="sm">
                                 <Text size="sm" fw={500}>{user.name}</Text>
                                 <Text size="xs" c="dimmed">{user.role}</Text>
-                            </div>
+                            </Box>
                         </Group>
                     </Menu.Target>
 

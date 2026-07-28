@@ -1,6 +1,6 @@
 
 import { Group, Text, Anchor } from '@mantine/core';
-import { Badge } from '../index';
+import { Badge } from '../../common/index';
 
 export default function Footer() {
     
