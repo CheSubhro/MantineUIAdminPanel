@@ -1,5 +1,6 @@
 
 import { useState, useMemo } from 'react';
+import { showToast } from '../utils/toast'; 
 
 const INITIAL_USERS = [
     { id: 1, name: 'Subhro Mukherjee', email: 'subhro@example.com', role: 'Admin', status: 'Active' },
@@ -9,7 +10,7 @@ const INITIAL_USERS = [
 ];
 
 export function useUsers() {
-
+    
     const [users, setUsers] = useState(INITIAL_USERS);
     const [searchQuery, setSearchQuery] = useState('');
     const [loading, setLoading] = useState(false);
@@ -24,6 +25,7 @@ export function useUsers() {
 
     const handleDeleteUser = (id) => {
         setUsers((prev) => prev.filter((user) => user.id !== id));
+        showToast.success('User Deleted', 'User has been removed successfully.');
     };
 
     const handleSaveUser = (userData) => {
@@ -32,6 +34,7 @@ export function useUsers() {
             setUsers((prev) =>
                 prev.map((user) => (user.id === userData.id ? userData : user))
             );
+            showToast.success('User Updated', 'User details updated successfully.');
         } else {
             // Add new user
             const newUser = {
@@ -39,6 +42,7 @@ export function useUsers() {
                 id: Date.now(), 
             };
             setUsers((prev) => [newUser, ...prev]);
+            showToast.success('User Created', 'New user added successfully.');
         }
     };
 
