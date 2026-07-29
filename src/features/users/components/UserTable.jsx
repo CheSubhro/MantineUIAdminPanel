@@ -154,6 +154,7 @@ function UserTableContent({
                     description="We couldn't find any users matching your search or criteria."
                     actionText="Add New User"
                     onAction={onAddClick}
+                    actionColor="violet"
                 />
             )}
 
