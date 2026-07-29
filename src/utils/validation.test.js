@@ -181,7 +181,7 @@ describe('Validation Utilities', () => {
             expect(isValidEmail('')).toBe(false);
         });
     });
-});
+})
 
 describe('Analytics Validation Utilities', () => {
     describe('validateTimeRange', () => {
