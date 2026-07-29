@@ -8,7 +8,8 @@ import {
     IconFileText,
     IconChartBar,
     IconArticle,
-    IconBook
+    IconBook,
+    IconCategory
 } from '@tabler/icons-react';
 import { Tooltip, Button } from '../../common/index';
 import { useLocation, useNavigate } from 'react-router-dom';
@@ -21,6 +22,7 @@ export default function Sidebar({ onLogout }) {
     const menuItems = [
         { id: 'dashboard', label: 'Dashboard', path: '/dashboard', icon: IconDashboard },
         { id: 'users', label: 'Users Management', path: '/users', icon: IconUsers },
+        { id: 'categories', label: 'Categories', path: '/categories', icon: IconCategory },
         { id: 'posts', label: 'Posts', path: '/posts', icon: IconArticle },
         { id: 'pages', label: 'Pages', path: '/pages', icon: IconBook },
         { id: 'analytics', label: 'Analytics', path: '/analytics', icon: IconChartBar },
