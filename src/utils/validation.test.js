@@ -6,7 +6,10 @@ import {
     validateCategoryForm, 
     validatePostForm,
     validatePageForm,
-    isValidEmail
+    isValidEmail,
+    validateTimeRange, 
+    validateMetrics, 
+    validateTrafficSources
 } from './validation';
 
 describe('User Form Validation Utility', () => {
@@ -176,6 +179,56 @@ describe('Validation Utilities', () => {
             expect(isValidEmail('invalid-email')).toBe(false);
             expect(isValidEmail('user@domain')).toBe(false);
             expect(isValidEmail('')).toBe(false);
+        });
+    });
+});
+
+describe('Analytics Validation Utilities', () => {
+    describe('validateTimeRange', () => {
+        it('should return the correct time range if valid', () => {
+            expect(validateTimeRange('30days')).toBe('30days');
+            expect(validateTimeRange('1year')).toBe('1year');
+        });
+
+        it('should return default "7days" for invalid or unknown time ranges', () => {
+            expect(validateTimeRange('invalid_range')).toBe('7days');
+            expect(validateTimeRange(null)).toBe('7days');
+            expect(validateTimeRange(undefined)).toBe('7days');
+        });
+    });
+
+    describe('validateMetrics', () => {
+        it('should return true for valid metrics object', () => {
+            const validMetrics = { totalViews: 45230, uniqueVisitors: 12450, totalPosts: 24 };
+            expect(validateMetrics(validMetrics)).toBe(true);
+        });
+
+        it('should return false for invalid or missing metrics data', () => {
+            expect(validateMetrics(null)).toBe(false);
+            expect(validateMetrics({ totalViews: -100, uniqueVisitors: 1200, totalPosts: 5 })).toBe(false);
+            expect(validateMetrics({ totalViews: '45000', uniqueVisitors: 12450, totalPosts: 24 })).toBe(false);
+        });
+    });
+
+    describe('validateTrafficSources', () => {
+        it('should return true if traffic sources percentages sum up to 100', () => {
+            const validSources = [
+                { source: 'Search Engines', percentage: 45 },
+                { source: 'Direct', percentage: 25 },
+                { source: 'Social Media', percentage: 20 },
+                { source: 'Referral', percentage: 10 },
+            ];
+            expect(validateTrafficSources(validSources)).toBe(true);
+        });
+
+        it('should return false if percentages do not sum to 100 or input is invalid', () => {
+            const invalidSources = [
+                { source: 'Search Engines', percentage: 50 },
+                { source: 'Direct', percentage: 30 },
+            ];
+            expect(validateTrafficSources(invalidSources)).toBe(false);
+            expect(validateTrafficSources([])).toBe(false);
+            expect(validateTrafficSources(null)).toBe(false);
         });
     });
 });

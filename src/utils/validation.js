@@ -107,6 +107,31 @@ export const validatePageForm = (values) => {
     return errors;
 };
 
+export function validateTimeRange(timeRange) {
+    const validRanges = ['7days', '30days', '1year'];
+    if (!validRanges.includes(timeRange)) {
+        return '7days'; // Default fallback
+    }
+    return timeRange;
+};
+
+export function validateMetrics(metrics) {
+    if (!metrics || typeof metrics !== 'object') return false;
+    
+    return (
+        typeof metrics.totalViews === 'number' && metrics.totalViews >= 0 &&
+        typeof metrics.uniqueVisitors === 'number' && metrics.uniqueVisitors >= 0 &&
+        typeof metrics.totalPosts === 'number' && metrics.totalPosts >= 0
+    );
+};
+
+export function validateTrafficSources(sources) {
+    if (!Array.isArray(sources) || sources.length === 0) return false;
+    
+    const totalPercentage = sources.reduce((sum, item) => sum + (item.percentage || 0), 0);
+    return totalPercentage === 100;
+};
+
 export const isValidEmail = (email) => {
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     return emailRegex.test(email);
