@@ -1,14 +1,14 @@
 
-import { describe, it, expect } from 'vitest';
+import { describe, it, test, expect } from 'vitest';
 import { 
     validateUserForm, 
     isFormValid,
     validateCategoryForm, 
+    validatePostForm,
     isValidEmail
 } from './validation';
 
 describe('User Form Validation Utility', () => {
-    
     it('should return no errors for valid user input', () => {
         const validUser = {
             name: 'Subhro Mondal',
@@ -97,6 +97,44 @@ describe('Validation Utilities', () => {
 
             const errors = validateCategoryForm(invalidValues);
             expect(errors.name).toBe('Category name must be at least 2 characters long');
+        });
+    });
+
+    describe('validatePostForm', () => {
+        test('should return no errors for valid post input', () => {
+            const validValues = {
+                title: 'Mastering React and Vite',
+                slug: 'mastering-react-and-vite',
+                author: 'Subhro Mondal',
+                excerpt: 'Learn how to use React with Vite efficiently.'
+            };
+
+            const errors = validatePostForm(validValues);
+            expect(Object.keys(errors)).toHaveLength(0);
+        });
+
+        test('should return errors when required fields are missing', () => {
+            const invalidValues = {
+                title: '',
+                slug: '',
+                author: ''
+            };
+
+            const errors = validatePostForm(invalidValues);
+            expect(errors.title).toBe('Post title is required');
+            expect(errors.slug).toBe('Slug is required');
+            expect(errors.author).toBe('Author name is required');
+        });
+
+        test('should return error for invalid post slug format', () => {
+            const invalidValues = {
+                title: 'Test Post',
+                slug: 'Test Post Slug!',
+                author: 'Subhro Mondal'
+            };
+
+            const errors = validatePostForm(invalidValues);
+            expect(errors.slug).toBe('Slug must be lowercase and contain only letters, numbers, and hyphens');
         });
     });
 
