@@ -123,7 +123,8 @@ export function validateMetrics(metrics) {
         typeof metrics.uniqueVisitors === 'number' && metrics.uniqueVisitors >= 0 &&
         typeof metrics.totalPosts === 'number' && metrics.totalPosts >= 0
     );
-};
+}
+
 
 export function validateTrafficSources(sources) {
     if (!Array.isArray(sources) || sources.length === 0) return false;
