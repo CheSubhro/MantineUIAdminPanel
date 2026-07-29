@@ -5,6 +5,8 @@ import { Title, Text, Container } from '@mantine/core';
 
 import DashboardPage from '../pages/DashboardPage';
 import UsersPage from '../pages/UsersPage';
+import PostsPage from '../pages/PostsPage';
+import PagesPage from '../pages/PagesPage';
 import AnalyticsPage from '../pages/AnalyticsPage';
 import ReportsPage from '../pages/ReportsPage';
 import SettingsPage from '../pages/SettingsPage';
@@ -17,6 +19,8 @@ export default function AppRoutes() {
 
             <Route path="/dashboard" element={<DashboardPage />} />
             <Route path="/users" element={<UsersPage />} />
+            <Route path="/posts" element={<PostsPage />} />
+            <Route path="/pages" element={<PagesPage />} />
             <Route path="/analytics" element={<AnalyticsPage />} />
             <Route path="/reports" element={<ReportsPage />} />
             <Route path="/settings" element={<SettingsPage />} />
