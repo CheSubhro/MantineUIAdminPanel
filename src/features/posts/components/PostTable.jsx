@@ -7,7 +7,7 @@ import {
     Input,
     Badge,
     Card,
-    EmptyState, feat: implement usePosts custom hook, unit tests, and PostsTable component
+    EmptyState,
     ErrorBoundary,
     Pagination,
     ConfirmModal,

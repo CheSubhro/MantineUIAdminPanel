@@ -1,6 +1,7 @@
 
 import { useState, useEffect } from 'react';
-import { Stack, Group } from '@mantine/core';
+import { Stack, Group, Text, Avatar, FileButton } from '@mantine/core';
+import { IconUpload, IconX } from '@tabler/icons-react';
 import {
     Modal,
     Input,
@@ -14,7 +15,7 @@ function PostModalContent({
     onClose,
     onSave,
     postToEdit = null,
-    categories = [] 
+    categories = []
 }) {
     const [formData, setFormData] = useState({
         title: '',
@@ -22,7 +23,8 @@ function PostModalContent({
         excerpt: '',
         category: 'Technology',
         author: 'Subhro Mondal',
-        image: '',
+        image: null, // ফাইলের জন্য ইনিশিয়াল স্টেট null
+        existingImage: '', // এডিট করার সময় আগের ছবি স্টোর করার জন্য
         status: 'Published',
     });
 
@@ -50,7 +52,8 @@ function PostModalContent({
                 excerpt: postToEdit.excerpt || '',
                 category: postToEdit.category || 'Technology',
                 author: postToEdit.author || 'Subhro Mondal',
-                image: postToEdit.image || '',
+                image: null,
+                existingImage: postToEdit.image || '',
                 status: postToEdit.status || 'Published',
             });
         } else {
@@ -60,7 +63,8 @@ function PostModalContent({
                 excerpt: '',
                 category: 'Technology',
                 author: 'Subhro Mondal',
-                image: '',
+                image: null,
+                existingImage: '',
                 status: 'Published',
             });
         }
@@ -89,6 +93,18 @@ function PostModalContent({
         }
     };
 
+    const handleFileChange = (file) => {
+        if (file) {
+            // লোকাল প্রিভিউ বা ফাইল অবজেক্ট সেভ করা
+            const fileUrl = URL.createObjectURL(file);
+            setFormData((prev) => ({
+                ...prev,
+                image: file,
+                existingImage: fileUrl, // প্রিভিউ দেখানোর জন্য
+            }));
+        }
+    };
+
     const validate = () => {
         const newErrors = {};
         if (!formData.title.trim()) newErrors.title = 'Post title is required';
@@ -101,7 +117,12 @@ function PostModalContent({
     const handleSubmit = (e) => {
         e.preventDefault();
         if (validate()) {
-            onSave(formData);
+            // সেভ করার সময় ডেটা পাস করা (যদি নতুন ফাইল না থাকে তবে আগেরটাই থেকে যাবে)
+            const payload = {
+                ...formData,
+                image: formData.image ? URL.createObjectURL(formData.image) : formData.existingImage
+            };
+            onSave(payload);
             onClose();
         }
     };
@@ -160,12 +181,27 @@ function PostModalContent({
                         required
                     />
 
-                    <Input
-                        label="Featured Image URL"
-                        placeholder="https://images.unsplash.com/..."
-                        value={formData.image}
-                        onChange={(e) => handleChange('image', e.target.value)}
-                    />
+                    {/* Featured Image Upload Field */}
+                    <div>
+                        <Text size="sm" fw={500} mb={5}>Featured Image</Text>
+                        <Group align="center" gap="sm">
+                            <FileButton onChange={handleFileChange} accept="image/png,image/jpeg,image/webp">
+                                {(props) => (
+                                    <Button {...props} variant="light" color="violet" leftSection={<IconUpload size={16} />}>
+                                        Upload Image
+                                    </Button>
+                                )}
+                            </FileButton>
+                            {formData.existingImage && (
+                                <Group gap="xs">
+                                    <Avatar src={formData.existingImage} size={40} radius="sm" />
+                                    <Text size="xs" c="dimmed">
+                                        {formData.image ? formData.image.name : 'Current Image'}
+                                    </Text>
+                                </Group>
+                            )}
+                        </Group>
+                    </div>
 
                     <Input
                         label="Excerpt / Description"
@@ -175,10 +211,10 @@ function PostModalContent({
                     />
 
                     <Group justify="flex-end" mt="md">
-                        <Button variant="subtle" onClick={onClose} type="button">
+                        <Button variant="subtle" onClick={onClose} type="button" color="gray">
                             Cancel
                         </Button>
-                        <Button type="submit">
+                        <Button type="submit" color="violet">
                             {postToEdit ? 'Update Post' : 'Create Post'}
                         </Button>
                     </Group>
