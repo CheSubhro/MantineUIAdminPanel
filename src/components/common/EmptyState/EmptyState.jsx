@@ -5,18 +5,20 @@ import { IconInbox } from '@tabler/icons-react';
 export default function EmptyState({
     title = "No data found",
     description,
-    icon: Icon = IconInbox,
+    icon,
     actionText,
-    onAction
+    onAction,
+    actionColor
 }) {
     return (
         <Center py="xl">
             <Stack align="center" gap="xs">
-                <Icon size={48} stroke={1.5} color="gray" />
+                {icon ? icon : <IconInbox size={48} stroke={1.5} color="gray" />}
+
                 <Text fw={500} size="lg">{title}</Text>
                 {description && <Text c="dimmed" size="sm" ta="center" maw={300}>{description}</Text>}
                 {actionText && onAction && (
-                    <Button mt="md" onClick={onAction} size="sm">
+                    <Button mt="md" onClick={onAction} size="sm" color={actionColor}>
                         {actionText}
                     </Button>
                 )}

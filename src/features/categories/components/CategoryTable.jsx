@@ -173,6 +173,7 @@ function CategoryTableContent({
                     description="We couldn't find any categories matching your search or criteria."
                     actionText="Add Category"
                     onAction={onAddClick}
+                    actionColor="violet"
                 />
             )}
 
