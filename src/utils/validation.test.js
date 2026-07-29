@@ -1,6 +1,11 @@
 
 import { describe, it, expect } from 'vitest';
-import { validateUserForm, isFormValid } from './validation';
+import { 
+    validateUserForm, 
+    isFormValid,
+    validateCategoryForm, 
+    isValidEmail
+} from './validation';
 
 describe('User Form Validation Utility', () => {
     
@@ -47,4 +52,65 @@ describe('User Form Validation Utility', () => {
         const errors = { name: 'Name is required.' };
         expect(isFormValid(errors)).toBe(false);
     });
+});
+
+describe('Validation Utilities', () => {
+    
+    describe('validateCategoryForm', () => {
+        test('should return no errors for valid category input', () => {
+            const validValues = {
+                name: 'Electronics',
+                slug: 'electronics',
+                description: 'Gadgets and devices'
+            };
+
+            const errors = validateCategoryForm(validValues);
+            expect(Object.keys(errors)).toHaveLength(0);
+        });
+
+        test('should return errors when name and slug are missing or empty', () => {
+            const invalidValues = {
+                name: '',
+                slug: ''
+            };
+
+            const errors = validateCategoryForm(invalidValues);
+            expect(errors.name).toBe('Category name is required');
+            expect(errors.slug).toBe('Slug is required');
+        });
+
+        test('should return error for invalid slug format (uppercase or spaces)', () => {
+            const invalidValues = {
+                name: 'Mobile Phones',
+                slug: 'Mobile Phones!' 
+            };
+
+            const errors = validateCategoryForm(invalidValues);
+            expect(errors.slug).toBe('Slug must be lowercase and contain only letters, numbers, and hyphens');
+        });
+
+        test('should return error if name is too short', () => {
+            const invalidValues = {
+                name: 'A',
+                slug: 'a'
+            };
+
+            const errors = validateCategoryForm(invalidValues);
+            expect(errors.name).toBe('Category name must be at least 2 characters long');
+        });
+    });
+
+    describe('isValidEmail', () => {
+        test('should return true for valid email addresses', () => {
+            expect(isValidEmail('test@example.com')).toBe(true);
+            expect(isValidEmail('user.name@domain.co.uk')).toBe(true);
+        });
+
+        test('should return false for invalid email addresses', () => {
+            expect(isValidEmail('invalid-email')).toBe(false);
+            expect(isValidEmail('user@domain')).toBe(false);
+            expect(isValidEmail('')).toBe(false);
+        });
+    });
+
 });

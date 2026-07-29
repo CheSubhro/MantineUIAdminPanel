@@ -32,3 +32,31 @@ export function validateUserForm(values) {
 export function isFormValid(errors) {
     return Object.keys(errors).length === 0;
 }
+
+
+export const validateCategoryForm = (values) => {
+    const errors = {};
+
+    if (!values.name || values.name.trim() === '') {
+        errors.name = 'Category name is required';
+    } else if (values.name.length < 2) {
+        errors.name = 'Category name must be at least 2 characters long';
+    }
+
+    if (!values.slug || values.slug.trim() === '') {
+        errors.slug = 'Slug is required';
+    } else if (!/^[a-z0-9-]+$/.test(values.slug)) {
+        errors.slug = 'Slug must be lowercase and contain only letters, numbers, and hyphens';
+    }
+
+    if (values.description && values.description.length > 255) {
+        errors.description = 'Description cannot exceed 255 characters';
+    }
+
+    return errors;
+};
+
+export const isValidEmail = (email) => {
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    return emailRegex.test(email);
+};
