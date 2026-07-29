@@ -33,7 +33,6 @@ export function isFormValid(errors) {
     return Object.keys(errors).length === 0;
 }
 
-
 export const validateCategoryForm = (values) => {
     const errors = {};
 
@@ -82,6 +81,31 @@ export const validatePostForm = (values) => {
     return errors;
 };
 
+export const validatePageForm = (values) => {
+    const errors = {};
+
+    if (!values.title || values.title.trim() === '') {
+        errors.title = 'Page title is required';
+    } else if (values.title.length < 3) {
+        errors.title = 'Page title must be at least 3 characters long';
+    }
+
+    if (!values.slug || values.slug.trim() === '') {
+        errors.slug = 'Slug is required';
+    } else if (!/^[a-z0-9-]+$/.test(values.slug)) {
+        errors.slug = 'Slug must be lowercase and contain only letters, numbers, and hyphens';
+    }
+
+    if (!values.author || values.author.trim() === '') {
+        errors.author = 'Author name is required';
+    }
+
+    if (values.excerpt && values.excerpt.length > 300) {
+        errors.excerpt = 'Excerpt cannot exceed 300 characters';
+    }
+
+    return errors;
+};
 
 export const isValidEmail = (email) => {
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;

@@ -5,6 +5,7 @@ import {
     isFormValid,
     validateCategoryForm, 
     validatePostForm,
+    validatePageForm,
     isValidEmail
 } from './validation';
 
@@ -138,6 +139,33 @@ describe('Validation Utilities', () => {
         });
     });
 
+    describe('validatePageForm', () => {
+        test('should return no errors for valid page input', () => {
+            const validValues = {
+                title: 'Privacy Policy',
+                slug: 'privacy-policy',
+                author: 'Subhro Mondal',
+                excerpt: 'Learn how we handle data.'
+            };
+
+            const errors = validatePageForm(validValues);
+            expect(Object.keys(errors)).toHaveLength(0);
+        });
+
+        test('should return errors when required page fields are missing', () => {
+            const invalidValues = {
+                title: '',
+                slug: '',
+                author: ''
+            };
+
+            const errors = validatePageForm(invalidValues);
+            expect(errors.title).toBe('Page title is required');
+            expect(errors.slug).toBe('Slug is required');
+            expect(errors.author).toBe('Author name is required');
+        });
+    });
+
     describe('isValidEmail', () => {
         test('should return true for valid email addresses', () => {
             expect(isValidEmail('test@example.com')).toBe(true);
@@ -150,5 +178,4 @@ describe('Validation Utilities', () => {
             expect(isValidEmail('')).toBe(false);
         });
     });
-
 });
