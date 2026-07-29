@@ -2,7 +2,7 @@
 import { useState, useMemo } from 'react';
 import { showToast } from '../utils/toast'; 
 
-const initialCategories = [
+const INITIAL_CATEGORIES = [
     {
         id: '1',
         name: 'Technology',
@@ -33,25 +33,27 @@ const initialCategories = [
 ];
 
 export function useCategories() {
-    const [categories, setCategories] = useState(initialCategories);
+    
+    const [categories, setCategories] = useState(INITIAL_CATEGORIES);
     const [searchQuery, setSearchQuery] = useState('');
     const [statusFilter, setStatusFilter] = useState('All');
-    
+    const [loading, setLoading] = useState(false);
+
     // Modal states
     const [isModalOpen, setIsModalOpen] = useState(false);
-    const [selectedCategory, setSelectedCategory] = useState(null);
+    const [categoryToEdit, setCategoryToEdit] = useState(null);
 
     // Delete confirmation state
     const [categoryToDelete, setCategoryToDelete] = useState(null);
 
-    // Filtered categories based on search and status
+    // Filtered categories based on search query and status
     const filteredCategories = useMemo(() => {
-        return categories.filter((cat) => {
+        return categories.filter((category) => {
             const matchesSearch = 
-                cat.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-                cat.slug.toLowerCase().includes(searchQuery.toLowerCase());
+                category.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+                category.slug.toLowerCase().includes(searchQuery.toLowerCase());
             
-            const matchesStatus = statusFilter === 'All' || cat.status === statusFilter;
+            const matchesStatus = statusFilter === 'All' || category.status === statusFilter;
 
             return matchesSearch && matchesStatus;
         });
@@ -59,34 +61,33 @@ export function useCategories() {
 
     // Open Modal for Add or Edit
     const handleOpenModal = (category = null) => {
-        setSelectedCategory(category);
+        setCategoryToEdit(category);
         setIsModalOpen(true);
     };
 
     const handleCloseModal = () => {
-        setSelectedCategory(null);
+        setCategoryToEdit(null);
         setIsModalOpen(false);
     };
 
     // Save Category (Create / Update)
-    const handleSaveCategory = (formData) => {
-        if (selectedCategory) {
-            // Update
+    const handleSaveCategory = (categoryData) => {
+        if (categoryData.id || categoryToEdit?.id) {
+            // Edit existing category
+            const targetId = categoryData.id || categoryToEdit.id;
             setCategories((prev) =>
-                prev.map((cat) =>
-                    cat.id === selectedCategory.id ? { ...cat, ...formData } : cat
-                )
+                prev.map((cat) => (cat.id === targetId ? { ...cat, ...categoryData, id: targetId } : cat))
             );
-            showToast('Category updated successfully!', 'success');
+            showToast.success('Category Updated', 'Category details updated successfully.');
         } else {
-            // Create
+            // Add new category
             const newCategory = {
+                ...categoryData,
                 id: Date.now().toString(),
                 postCount: 0,
-                ...formData
             };
             setCategories((prev) => [newCategory, ...prev]);
-            showToast('Category created successfully!', 'success');
+            showToast.success('Category Created', 'New category added successfully.');
         }
         handleCloseModal();
     };
@@ -95,7 +96,7 @@ export function useCategories() {
     const handleDeleteCategory = (id) => {
         setCategories((prev) => prev.filter((cat) => cat.id !== id));
         setCategoryToDelete(null);
-        showToast('Category deleted successfully!', 'success');
+        showToast.success('Category Deleted', 'Category has been removed successfully.');
     };
 
     return {
@@ -105,13 +106,14 @@ export function useCategories() {
         setSearchQuery,
         statusFilter,
         setStatusFilter,
+        loading,
         isModalOpen,
-        selectedCategory,
+        categoryToEdit,
         categoryToDelete,
         setCategoryToDelete,
         handleOpenModal,
         handleCloseModal,
         handleSaveCategory,
-        handleDeleteCategory
+        handleDeleteCategory,
     };
 }
