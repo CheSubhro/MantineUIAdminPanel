@@ -1,8 +1,8 @@
 
 import React from 'react';
 import { Routes, Route, Navigate } from 'react-router-dom';
-import { Title, Text, Container } from '@mantine/core';
-
+import Register from '../pages/Register';
+import Login from '../pages/Login';
 import DashboardPage from '../pages/DashboardPage';
 import UsersPage from '../pages/UsersPage';
 import CategoriesPage from '../pages/CategoriesPage';
@@ -16,6 +16,8 @@ import NotFoundPage from '../pages/NotFoundPage';
 export default function AppRoutes() {
     return (
         <Routes>
+            <Route path="/register" element={<Register />} />
+            <Route path="/login" element={<Login />} />
             <Route path="/" element={<Navigate to="/dashboard" replace />} />
 
             <Route path="/dashboard" element={<DashboardPage />} />
