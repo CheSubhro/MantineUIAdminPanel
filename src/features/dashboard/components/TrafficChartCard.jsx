@@ -16,7 +16,7 @@ const data = [
 
 export default function TrafficChartCard() {
     return (
-        <Card className="p-5 shadow-sm">
+        <Card className="p-5 shadow-sm bg-white dark:bg-zinc-800">
             <Title order={3} className="text-lg font-semibold text-gray-800 dark:text-white mb-1">
                 Traffic Overview
             </Title>
@@ -24,7 +24,7 @@ export default function TrafficChartCard() {
                 Visitor trends over the last 7 days
             </Text>
 
-            <div className="h-64 w-full">
+            <div style={{ width: '100%', height: 260 }}>
                 <ResponsiveContainer width="100%" height="100%">
                     <AreaChart data={data} margin={{ top: 10, right: 10, left: -20, bottom: 0 }}>
                         <defs>
