@@ -4,6 +4,7 @@ import { useSettings } from '../hooks/useSettings';
 import { SettingsForm } from '../features/settings/components/SettingsForm';
 
 export default function SettingsPage() {
+    
     const { settings, updateSetting, saveSettings, loading, successMessage } = useSettings();
 
     return (
