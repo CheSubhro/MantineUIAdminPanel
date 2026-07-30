@@ -21,7 +21,15 @@ export const useDashboard = () => {
         { id: 3, title: 'Understanding Form Validation in React', author: 'Subhro Mondal', date: '2026-07-25' }
     ]);
 
+    const [recentUsers, setRecentUsers] = useState([
+        { id: 1, name: 'Alex Johnson', email: 'alex@example.com' },
+        { id: 2, name: 'Sarah Smith', email: 'sarah@example.com' },
+        { id: 3, name: 'Michael Brown', email: 'michael@example.com' }
+    ]);
+
     const [loading, setLoading] = useState(false);
+
+    
 
     useEffect(() => {
     }, []);
@@ -30,6 +38,7 @@ export const useDashboard = () => {
         metrics,
         trafficSources,
         recentPosts,
+        recentUsers,
         loading
     };
 };

@@ -6,13 +6,14 @@ import { useNavigate } from 'react-router-dom';
 import { useDashboard } from '../hooks/useDashboard';
 import DashboardHeader from '../features/dashboard/components/DashboardHeader';
 import DashboardMetrics from '../features/dashboard/components/DashboardMetrics';
-import RecentPostsCard from '../features/dashboard/components/RecentPostsCard';
+import TrafficChartCard from '../features/dashboard/components/TrafficChartCard';
 import TrafficSourcesCard from '../features/dashboard/components/TrafficSourcesCard';
+import RecentPostsCard from '../features/dashboard/components/RecentPostsCard';
+import RecentUsersCard from '../features/dashboard/components/RecentUsersCard';
 import { Spinner } from '../components/common';
 
 export default function DashboardPage() {
-    
-    const { metrics, trafficSources, recentPosts, loading } = useDashboard();
+    const { metrics, trafficSources, recentPosts, recentUsers, loading } = useDashboard();
     const navigate = useNavigate();
 
     const handleNewPost = () => {
@@ -37,28 +38,25 @@ export default function DashboardPage() {
             />
 
             {/* Metric Cards */}
-            <DashboardMetrics
-                metrics={metrics}
-            />
+            <DashboardMetrics metrics={metrics} />
 
-            {/* Bottom Cards */}
+            {/* Analytics Charts Section */}
             <Grid gutter="lg">
-                <Grid.Col
-                    xs={12}
-                    md={6}
-                >
-                    <RecentPostsCard
-                        posts={recentPosts}
-                    />
+                <Grid.Col xs={12} lg={8}>
+                    <TrafficChartCard />
                 </Grid.Col>
+                <Grid.Col xs={12} lg={4}>
+                    <TrafficSourcesCard trafficSources={trafficSources} />
+                </Grid.Col>
+            </Grid>
 
-                <Grid.Col
-                    xs={12}
-                    md={6}
-                >
-                    <TrafficSourcesCard
-                        trafficSources={trafficSources}
-                    />
+            {/* Recent Activities & Lists Section */}
+            <Grid gutter="lg">
+                <Grid.Col xs={12} md={6}>
+                    <RecentPostsCard posts={recentPosts} />
+                </Grid.Col>
+                <Grid.Col xs={12} md={6}>
+                    <RecentUsersCard users={recentUsers} />
                 </Grid.Col>
             </Grid>
         </Stack>
