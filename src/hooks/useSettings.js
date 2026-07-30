@@ -1,5 +1,6 @@
 
 import { useState, useCallback } from 'react';
+import { showToast } from '../utils/toast';
 
 export function useSettings(initialSettings = {}) {
     
@@ -55,6 +56,7 @@ export function useSettings(initialSettings = {}) {
         setTimeout(() => {
             setLoading(false);
             setSuccessMessage('Settings updated successfully!');
+            showToast.success('Settings Saved', 'System configurations updated successfully.');
             if (onSuccess) onSuccess();
             
             setTimeout(() => setSuccessMessage(''), 3000);
