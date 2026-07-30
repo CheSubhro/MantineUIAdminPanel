@@ -9,7 +9,8 @@ import {
     isValidEmail,
     validateTimeRange, 
     validateMetrics, 
-    validateTrafficSources
+    validateTrafficSources,
+    validateSettingsForm
 } from './validation';
 
 describe('User Form Validation Utility', () => {
@@ -230,5 +231,114 @@ describe('Analytics Validation Utilities', () => {
             expect(validateTrafficSources([])).toBe(false);
             expect(validateTrafficSources(null)).toBe(false);
         });
+    });
+});
+
+/* System Settings Validation Tests */
+describe('validateSettingsForm', () => {
+    const validSettings = {
+        siteName: 'My Application',
+        tagline: 'Building amazing apps with React and Vite',
+        timezone: 'UTC (Coordinated Universal Time)',
+        language: 'en',
+        systemEmailAlerts: true,
+        pushNotifications: true,
+        smsAlerts: false,
+
+        twoFactorAuth: true,
+        passwordExpireDays: '90',
+        sessionTimeout: '30',
+
+        smtpHost: 'smtp.mailtrap.io',
+        smtpPort: '587',
+        smtpUser: 'admin@example.com',
+        smtpPass: 'secure-password',
+
+        googleAnalyticsId: 'UA-XXXXXXXXX-X',
+        paymentGatewayKey: 'pk_test_123456',
+        externalApiKey: 'external-api-key',
+
+        backupFrequency: 'daily',
+        maintenanceMode: false
+    };
+
+    test('should return no errors for valid settings', () => {
+        const errors = validateSettingsForm(validSettings);
+        expect(errors).toEqual({});
+        expect(isFormValid(errors)).toBe(true);
+    });
+
+    test('should return errors for missing general settings', () => {
+        const values = {
+            ...validSettings,
+            siteName: '',
+            tagline: '',
+            timezone: '',
+            language: ''
+        };
+
+        const errors = validateSettingsForm(values);
+        expect(errors.siteName).toBe('Site name is required');
+        expect(errors.tagline).toBe('Tagline is required');
+        expect(errors.timezone).toBe('Timezone is required');
+        expect(errors.language).toBe('Default language is required');
+    });
+
+    test('should return errors for invalid security values', () => {
+        const values = {
+            ...validSettings,
+            passwordExpireDays: '0',
+            sessionTimeout: '2000'
+        };
+
+        const errors = validateSettingsForm(values);
+        expect(errors.passwordExpireDays).toBe('Password expiration must be between 1 and 3650 days');
+        expect(errors.sessionTimeout).toBe('Session timeout must be between 1 and 1440 minutes');
+    });
+
+    test('should return errors for empty SMTP fields', () => {
+        const values = {
+            ...validSettings,
+            smtpHost: '',
+            smtpPort: '',
+            smtpUser: '',
+            smtpPass: ''
+        };
+
+        const errors = validateSettingsForm(values);
+        expect(errors.smtpHost).toBe('SMTP host is required');
+        expect(errors.smtpPort).toBe('SMTP port is required');
+        expect(errors.smtpUser).toBe('SMTP username is required');
+        expect(errors.smtpPass).toBe('SMTP password is required');
+    });
+
+    test('should return an error for invalid SMTP port', () => {
+        const values = {
+            ...validSettings,
+            smtpPort: '70000'
+        };
+
+        const errors = validateSettingsForm(values);
+        expect(errors.smtpPort).toBe('SMTP port must be between 1 and 65535');
+    });
+
+    test('should return an error for short SMTP password', () => {
+        const values = {
+            ...validSettings,
+            smtpPass: '123'
+        };
+
+        const errors = validateSettingsForm(values);
+        expect(errors.smtpPass).toBe('SMTP password must be at least 4 characters long');
+    });
+
+    test('should return an error for invalid backup frequency', () => {
+        const values = {
+            ...validSettings,
+            backupFrequency: 'yearly'
+        };
+
+        const errors = validateSettingsForm(values);
+        expect(errors.backupFrequency).toBe('Please select a valid backup frequency');
     });
 });

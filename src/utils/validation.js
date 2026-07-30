@@ -125,12 +125,114 @@ export function validateMetrics(metrics) {
     );
 }
 
-
 export function validateTrafficSources(sources) {
     if (!Array.isArray(sources) || sources.length === 0) return false;
     
     const totalPercentage = sources.reduce((sum, item) => sum + (item.percentage || 0), 0);
     return totalPercentage === 100;
+};
+
+export const validateSettingsForm = (values = {}) => {
+    const errors = {};
+
+    // General Settings
+    if (!values.siteName || !values.siteName.trim()) {
+        errors.siteName = 'Site name is required';
+    } else if (values.siteName.trim().length < 2) {
+        errors.siteName = 'Site name must be at least 2 characters long';
+    }
+
+    if (!values.tagline || !values.tagline.trim()) {
+        errors.tagline = 'Tagline is required';
+    } else if (values.tagline.trim().length < 3) {
+        errors.tagline = 'Tagline must be at least 3 characters long';
+    }
+
+    if (!values.timezone || !values.timezone.trim()) {
+        errors.timezone = 'Timezone is required';
+    }
+
+    if (!values.language || !values.language.trim()) {
+        errors.language = 'Default language is required';
+    }
+
+    // Security Settings
+    if (
+        values.passwordExpireDays === '' ||
+        values.passwordExpireDays === null ||
+        values.passwordExpireDays === undefined
+    ) {
+        errors.passwordExpireDays = 'Password expiration days is required';
+    } else {
+        const passwordDays = Number(values.passwordExpireDays);
+        if (!Number.isInteger(passwordDays) || passwordDays < 1 || passwordDays > 3650) {
+            errors.passwordExpireDays = 'Password expiration must be between 1 and 3650 days';
+        }
+    }
+
+    if (
+        values.sessionTimeout === '' ||
+        values.sessionTimeout === null ||
+        values.sessionTimeout === undefined
+    ) {
+        errors.sessionTimeout = 'Session timeout is required';
+    } else {
+        const timeout = Number(values.sessionTimeout);
+        if (!Number.isInteger(timeout) || timeout < 1 || timeout > 1440) {
+            errors.sessionTimeout = 'Session timeout must be between 1 and 1440 minutes';
+        }
+    }
+
+    // SMTP Settings
+    if (!values.smtpHost || !values.smtpHost.trim()) {
+        errors.smtpHost = 'SMTP host is required';
+    } else if (values.smtpHost.trim().length < 3) {
+        errors.smtpHost = 'SMTP host must be at least 3 characters long';
+    }
+
+    if (
+        values.smtpPort === '' ||
+        values.smtpPort === null ||
+        values.smtpPort === undefined
+    ) {
+        errors.smtpPort = 'SMTP port is required';
+    } else {
+        const smtpPort = Number(values.smtpPort);
+        if (!Number.isInteger(smtpPort) || smtpPort < 1 || smtpPort > 65535) {
+            errors.smtpPort = 'SMTP port must be between 1 and 65535';
+        }
+    }
+
+    if (!values.smtpUser || !values.smtpUser.trim()) {
+        errors.smtpUser = 'SMTP username is required';
+    }
+
+    if (!values.smtpPass || !values.smtpPass.trim()) {
+        errors.smtpPass = 'SMTP password is required';
+    } else if (values.smtpPass.length < 4) {
+        errors.smtpPass = 'SMTP password must be at least 4 characters long';
+    }
+
+    // API & Integrations
+    if (values.googleAnalyticsId && !values.googleAnalyticsId.trim()) {
+        errors.googleAnalyticsId = 'Google Analytics ID cannot contain only spaces';
+    }
+
+    if (values.paymentGatewayKey && !values.paymentGatewayKey.trim()) {
+        errors.paymentGatewayKey = 'Payment gateway API key cannot contain only spaces';
+    }
+
+    if (values.externalApiKey && !values.externalApiKey.trim()) {
+        errors.externalApiKey = 'External API key cannot contain only spaces';
+    }
+
+    // Backup & Maintenance
+    const validBackupFrequencies = ['daily', 'weekly', 'monthly'];
+    if (!values.backupFrequency || !validBackupFrequencies.includes(values.backupFrequency)) {
+        errors.backupFrequency = 'Please select a valid backup frequency';
+    }
+
+    return errors;
 };
 
 export const isValidEmail = (email) => {
