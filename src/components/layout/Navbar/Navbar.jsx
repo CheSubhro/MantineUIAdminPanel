@@ -1,9 +1,11 @@
 
 import { Group, Burger, Text, ActionIcon, Avatar, Menu, Box } from '@mantine/core';
 import { IconBell, IconSettings, IconLogout, IconUser } from '@tabler/icons-react';
+import { useNavigate } from 'react-router-dom';
 import { Tooltip, Badge, ThemeToggle } from '../../common/index';
 
 export default function Navbar({ opened, toggle, user = { name: 'Admin User', role: 'Super Admin' } }) {
+    const navigate = useNavigate();
 
     return (
         <Group h="100%" px="md" justify="space-between" bg="var(--mantine-color-body)" style={{ borderBottom: '1px solid #eaeaea' }}>
@@ -44,7 +46,12 @@ export default function Navbar({ opened, toggle, user = { name: 'Admin User', ro
 
                     <Menu.Dropdown>
                         <Menu.Label>Settings</Menu.Label>
-                        <Menu.Item leftSection={<IconUser size={14} />}>Profile</Menu.Item>
+                        <Menu.Item
+                            leftSection={<IconUser size={14} />}
+                            onClick={() => navigate('/profile')}
+                        >
+                            Profile
+                        </Menu.Item>
                         <Menu.Item leftSection={<IconSettings size={14} />}>Account Settings</Menu.Item>
                         <Menu.Divider />
                         <Menu.Item color="red" leftSection={<IconLogout size={14} />}>
