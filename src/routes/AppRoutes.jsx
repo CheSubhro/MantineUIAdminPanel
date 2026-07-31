@@ -19,6 +19,7 @@ import PrivacyPolicyPage from '../pages/PrivacyPolicyPage';
 import TermsOfServicePage from '../pages/TermsOfServicePage';
 
 import MediaManagerPage from '../pages/MediaManagerPage';
+import CommentsPage from '../pages/CommentsPage';
 
 export default function AppRoutes() {
     return (
@@ -39,6 +40,7 @@ export default function AppRoutes() {
             <Route path="/settings" element={<SettingsPage />} />
         
             <Route path="/media" element={<MediaManagerPage />} />
+            <Route path="/comments" element={<CommentsPage />} />
 
             <Route path="/privacy-policy" element={<PrivacyPolicyPage />} />
             <Route path="/terms-of-service" element={<TermsOfServicePage />} />
