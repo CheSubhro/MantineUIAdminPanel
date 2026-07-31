@@ -292,3 +292,22 @@ export const isValidEmail = (email) => {
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     return emailRegex.test(email);
 };
+
+export const ALLOWED_IMAGE_TYPES = ['image/jpeg', 'image/png', 'image/webp'];
+export const MAX_FILE_SIZE = 5 * 1024 * 1024; // 5MB
+
+export function validateMediaFile(file) {
+    if (!file) {
+        return { isValid: false, message: 'No file provided.' };
+    }
+
+    if (!ALLOWED_IMAGE_TYPES.includes(file.type)) {
+        return { isValid: false, message: 'Invalid file type. Only JPEG, PNG, and WEBP are allowed.' };
+    }
+
+    if (file.size > MAX_FILE_SIZE) {
+        return { isValid: false, message: 'File size exceeds the 5MB limit.' };
+    }
+
+    return { isValid: true, message: 'File is valid.' };
+}

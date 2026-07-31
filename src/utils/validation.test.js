@@ -12,7 +12,9 @@ import {
     validateTrafficSources,
     validateSettingsForm,
     validateRegisterForm, 
-    validateLoginForm
+    validateLoginForm,
+    validateMediaFile,
+    MAX_FILE_SIZE
 } from './validation';
 
 describe('User Form Validation Utility', () => {
@@ -413,5 +415,33 @@ describe('Auth Validation Utilities (Register & Login)', () => {
             expect(errors.identifier).toBe('Username or email is required');
             expect(errors.password).toBe('Password is required');
         });
+    });
+});
+
+describe('Media Validation Utility', () => {
+    it('should return valid for a correct image file', () => {
+        const validFile = { type: 'image/jpeg', size: 1024 * 1024 }; // 1MB
+        const result = validateMediaFile(validFile);
+        expect(result.isValid).toBe(true);
+    });
+
+    it('should return invalid for an unsupported file type', () => {
+        const invalidFile = { type: 'application/pdf', size: 1024 * 1024 };
+        const result = validateMediaFile(invalidFile);
+        expect(result.isValid).toBe(false);
+        expect(result.message).toContain('Invalid file type');
+    });
+
+    it('should return invalid if file size exceeds the limit', () => {
+        const largeFile = { type: 'image/png', size: MAX_FILE_SIZE + 1000 };
+        const result = validateMediaFile(largeFile);
+        expect(result.isValid).toBe(false);
+        expect(result.message).toContain('File size exceeds');
+    });
+
+    it('should return invalid if no file is provided', () => {
+        const result = validateMediaFile(null);
+        expect(result.isValid).toBe(false);
+        expect(result.message).toBe('No file provided.');
     });
 });

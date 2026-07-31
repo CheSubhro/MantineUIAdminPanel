@@ -18,6 +18,8 @@ import NotFoundPage from '../pages/NotFoundPage';
 import PrivacyPolicyPage from '../pages/PrivacyPolicyPage';
 import TermsOfServicePage from '../pages/TermsOfServicePage';
 
+import MediaManagerPage from '../pages/MediaManagerPage';
+
 export default function AppRoutes() {
     return (
         <Routes>
@@ -35,6 +37,8 @@ export default function AppRoutes() {
             <Route path="/analytics" element={<AnalyticsPage />} />
             <Route path="/reports" element={<ReportsPage />} />
             <Route path="/settings" element={<SettingsPage />} />
+        
+            <Route path="/media" element={<MediaManagerPage />} />
 
             <Route path="/privacy-policy" element={<PrivacyPolicyPage />} />
             <Route path="/terms-of-service" element={<TermsOfServicePage />} />
