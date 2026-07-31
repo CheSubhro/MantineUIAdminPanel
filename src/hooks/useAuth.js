@@ -4,6 +4,7 @@ import { useNavigate } from 'react-router-dom';
 import { showToast } from '../utils/toast';
 
 export const useAuth = () => {
+    
     const navigate = useNavigate();
     const [user, setUser] = useState(JSON.parse(localStorage.getItem('admin_user')) || null);
     const [loading, setLoading] = useState(false);
