@@ -28,7 +28,7 @@ export default function Sidebar({ onLogout }) {
         { id: 'categories', label: 'Categories', path: '/categories', icon: IconCategory },
         { id: 'posts', label: 'Posts', path: '/posts', icon: IconArticle },
         { id: 'pages', label: 'Pages', path: '/pages', icon: IconBook },
-        { id: 'media', label: 'Media Manager', path: '/media', icon: IconPhoto},
+        { id: 'media', label: 'Media Manager', path: '/media', icon: IconPhoto },
         { id: 'analytics', label: 'Analytics', path: '/analytics', icon: IconChartBar },
         { id: 'reports', label: 'Reports', path: '/reports', icon: IconFileText },
         { id: 'settings', label: 'Settings', path: '/settings', icon: IconSettings },
@@ -36,16 +36,24 @@ export default function Sidebar({ onLogout }) {
 
     return (
         <Stack
-            h="100%"
+            h="100vh" 
             justify="space-between"
             p="md"
             style={(theme) => ({
                 borderRight: '1px solid var(--mantine-color-default-border)',
-                backgroundColor: 'var(--mantine-color-body)'
+                backgroundColor: 'var(--mantine-color-body)',
+                overflow: 'hidden' 
             })}
         >
             {/* Top Menu Links */}
-            <Stack gap="xs">
+            <Stack
+                gap="xs"
+                style={{
+                    flex: 1,
+                    overflowY: 'auto', 
+                    paddingRight: '4px'
+                }}
+            >
                 <Text size="xs" fw={700} c="dimmed" tt="uppercase" mb="xs">
                     Main Menu
                 </Text>
@@ -84,14 +92,14 @@ export default function Sidebar({ onLogout }) {
             </Stack>
 
             {/* Bottom Logout Button */}
-            <Stack pt="md" style={{ borderTop: '1px solid var(--mantine-color-default-border)' }}>
+            <Stack pt="md" style={{ borderTop: '1px solid var(--mantine-color-default-border)', backgroundColor: 'var(--mantine-color-body)' }}>
                 <Button
                     variant="subtle"
                     color="red"
                     fullWidth
                     justify="flex-start"
                     leftSection={<IconLogout size={20} />}
-                    onClick={logout} 
+                    onClick={logout}
                 >
                     Logout
                 </Button>
