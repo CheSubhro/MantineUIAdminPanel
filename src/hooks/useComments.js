@@ -1,7 +1,8 @@
 
 import { useState, useMemo } from 'react';
+import { showToast } from '../utils/toast';
 
-const initialComments = [
+const INITIAL_COMMENTS = [
     {
         id: '1',
         author: 'John Doe',
@@ -32,10 +33,11 @@ const initialComments = [
 ];
 
 export function useComments() {
-    const [comments, setComments] = useState(initialComments);
+    const [comments, setComments] = useState(INITIAL_COMMENTS);
     const [searchQuery, setSearchQuery] = useState('');
     const [statusFilter, setStatusFilter] = useState('all'); // 'all', 'approved', 'pending', 'spam'
-    
+    const [loading, setLoading] = useState(false);
+
     // Reply modal state
     const [replyModalOpened, setReplyModalOpened] = useState(false);
     const [selectedComment, setSelectedComment] = useState(null);
@@ -57,24 +59,27 @@ export function useComments() {
 
     // Handle Approve
     const handleApprove = (id) => {
-        setComments(prev => 
-            prev.map(c => c.id === id ? { ...c, status: 'approved' } : c)
+        setComments((prev) => 
+            prev.map((c) => (c.id === id ? { ...c, status: 'approved' } : c))
         );
+        showToast.success('Comment Approved', 'The comment has been approved successfully.');
     };
 
     // Handle Spam
     const handleMarkAsSpam = (id) => {
-        setComments(prev => 
-            prev.map(c => c.id === id ? { ...c, status: 'spam' } : c)
+        setComments((prev) => 
+            prev.map((c) => (c.id === id ? { ...c, status: 'spam' } : c))
         );
+        showToast.warning('Marked as Spam', 'The comment has been marked as spam.');
     };
 
     // Handle Delete
     const handleDelete = (id) => {
-        setComments(prev => prev.filter(c => c.id !== id));
+        setComments((prev) => prev.filter((c) => c.id !== id));
+        showToast.success('Comment Deleted', 'The comment has been removed successfully.');
     };
 
-    // Handle Reply Open
+    // Handle Reply Open/Close
     const openReplyModal = (comment) => {
         setSelectedComment(comment);
         setReplyText('');
@@ -89,7 +94,7 @@ export function useComments() {
 
     const handleSendReply = () => {
         if (!replyText.trim()) return;
-        // এখানে চাইলে রিপ্লাই সাবমিট বা API কল হ্যান্ডেল করা যাবে
+        showToast.success('Reply Sent', 'Your reply has been sent successfully.');
         closeReplyModal();
     };
 
@@ -100,13 +105,14 @@ export function useComments() {
         setSearchQuery,
         statusFilter,
         setStatusFilter,
-        handleApprove,
-        handleMarkAsSpam,
-        handleDelete,
+        loading,
         replyModalOpened,
         selectedComment,
         replyText,
         setReplyText,
+        handleApprove,
+        handleMarkAsSpam,
+        handleDelete,
         openReplyModal,
         closeReplyModal,
         handleSendReply,
