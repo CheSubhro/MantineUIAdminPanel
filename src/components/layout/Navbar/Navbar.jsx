@@ -4,10 +4,12 @@ import { IconBell, IconSettings, IconLogout, IconUser, IconCheck } from '@tabler
 import { useNavigate } from 'react-router-dom';
 import { Tooltip, Badge, ThemeToggle } from '../../common';
 import { useState } from 'react';
+import { useAuth } from '../../../hooks/useAuth';
 
 export default function Navbar({ opened, toggle, user = { name: 'Admin User', role: 'Super Admin' } }) {
-    
+
     const navigate = useNavigate();
+    const { logout } = useAuth();
 
     const [notifications, setNotifications] = useState([
         { id: 1, title: 'New user registered', time: '5m ago', unread: true },
@@ -23,10 +25,18 @@ export default function Navbar({ opened, toggle, user = { name: 'Admin User', ro
 
     return (
         <Group h="100%" px="md" justify="space-between" bg="var(--mantine-color-body)" style={{ borderBottom: '1px solid #eaeaea' }}>
-            {/* Left Section: Burger & App Title */}
+            {/* Left Section: Burger & App Title with Dashboard Link */}
             <Group>
                 <Burger opened={opened} onClick={toggle} hiddenFrom="sm" size="sm" />
-                <Text fw={700} size="lg" c="blue.7">Admin Panel</Text>
+                <Text
+                    fw={700}
+                    size="lg"
+                    c="blue.7"
+                    style={{ cursor: 'pointer' }}
+                    onClick={() => navigate('/dashboard')}
+                >
+                    Admin Panel
+                </Text>
             </Group>
 
             {/* Right Section: Notifications, Tooltips & User Profile */}
@@ -125,7 +135,11 @@ export default function Navbar({ opened, toggle, user = { name: 'Admin User', ro
                             Account Settings
                         </Menu.Item>
                         <Menu.Divider />
-                        <Menu.Item color="red" leftSection={<IconLogout size5={14} />}>
+                        <Menu.Item
+                            color="red"
+                            leftSection={<IconLogout size={14} />}
+                            onClick={logout}
+                        >
                             Logout
                         </Menu.Item>
                     </Menu.Dropdown>
