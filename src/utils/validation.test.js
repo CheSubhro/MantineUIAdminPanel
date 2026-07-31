@@ -10,7 +10,9 @@ import {
     validateTimeRange, 
     validateMetrics, 
     validateTrafficSources,
-    validateSettingsForm
+    validateSettingsForm,
+    validateRegisterForm, 
+    validateLoginForm
 } from './validation';
 
 describe('User Form Validation Utility', () => {
@@ -340,5 +342,76 @@ describe('validateSettingsForm', () => {
 
         const errors = validateSettingsForm(values);
         expect(errors.backupFrequency).toBe('Please select a valid backup frequency');
+    });
+});
+
+describe('Auth Validation Utilities (Register & Login)', () => {
+    describe('validateRegisterForm', () => {
+        test('should return no errors for valid register input', () => {
+            const validValues = {
+                fullName: 'John Doe',
+                username: 'johndoe',
+                email: 'john@example.com',
+                password: 'securepassword123',
+                role: 'Admin'
+            };
+
+            const errors = validateRegisterForm(validValues);
+            expect(Object.keys(errors)).toHaveLength(0);
+        });
+
+        test('should return errors when required register fields are missing', () => {
+            const invalidValues = {
+                fullName: '',
+                username: '',
+                email: '',
+                password: '',
+                role: ''
+            };
+
+            const errors = validateRegisterForm(invalidValues);
+            expect(errors.fullName).toBe('Full name is required');
+            expect(errors.username).toBe('Username is required');
+            expect(errors.email).toBe('Email is required');
+            expect(errors.password).toBe('Password is required');
+            expect(errors.role).toBe('Role is required');
+        });
+
+        test('should return error for invalid username format or short password', () => {
+            const invalidValues = {
+                fullName: 'John Doe',
+                username: 'john doe!', // spaces and special chars not allowed
+                email: 'john@example.com',
+                password: '123', // too short
+                role: 'Admin'
+            };
+
+            const errors = validateRegisterForm(invalidValues);
+            expect(errors.username).toBe('Username can only contain letters, numbers, and underscores');
+            expect(errors.password).toBe('Password must be at least 6 characters long');
+        });
+    });
+
+    describe('validateLoginForm', () => {
+        test('should return no errors for valid login input', () => {
+            const validValues = {
+                identifier: 'johndoe',
+                password: 'securepassword123'
+            };
+
+            const errors = validateLoginForm(validValues);
+            expect(Object.keys(errors)).toHaveLength(0);
+        });
+
+        test('should return errors when login identifier or password is missing', () => {
+            const invalidValues = {
+                identifier: '',
+                password: ''
+            };
+
+            const errors = validateLoginForm(invalidValues);
+            expect(errors.identifier).toBe('Username or email is required');
+            expect(errors.password).toBe('Password is required');
+        });
     });
 });

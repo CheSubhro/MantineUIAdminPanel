@@ -235,6 +235,59 @@ export const validateSettingsForm = (values = {}) => {
     return errors;
 };
 
+export const validateRegisterForm = (values) => {
+    const errors = {};
+
+    if (!values.fullName || !values.fullName.trim()) {
+        errors.fullName = 'Full name is required';
+    } else if (values.fullName.trim().length < 2) {
+        errors.fullName = 'Full name must be at least 2 characters long';
+    }
+
+    if (!values.username || !values.username.trim()) {
+        errors.username = 'Username is required';
+    } else if (values.username.trim().length < 3) {
+        errors.username = 'Username must be at least 3 characters long';
+    } else if (!/^[a-zA-Z0-9_]+$/.test(values.username)) {
+        errors.username = 'Username can only contain letters, numbers, and underscores';
+    }
+
+    if (!values.email || !values.email.trim()) {
+        errors.email = 'Email is required';
+    } else {
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        if (!emailRegex.test(values.email.trim())) {
+            errors.email = 'Invalid email address format';
+        }
+    }
+
+    if (!values.password || values.password === '') {
+        errors.password = 'Password is required';
+    } else if (values.password.length < 6) {
+        errors.password = 'Password must be at least 6 characters long';
+    }
+
+    if (!values.role || !values.role.trim()) {
+        errors.role = 'Role is required';
+    }
+
+    return errors;
+};
+// Login Form Validation
+export const validateLoginForm = (values) => {
+    const errors = {};
+
+    if (!values.identifier || !values.identifier.trim()) {
+        errors.identifier = 'Username or email is required';
+    }
+
+    if (!values.password || values.password === '') {
+        errors.password = 'Password is required';
+    }
+
+    return errors;
+};
+
 export const isValidEmail = (email) => {
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     return emailRegex.test(email);
