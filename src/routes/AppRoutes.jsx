@@ -3,7 +3,7 @@ import React from 'react';
 import { Routes, Route, Navigate } from 'react-router-dom';
 import Register from '../pages/Register';
 import Login from '../pages/Login';
-import {Profile} from '../pages/Profile';
+import Profile from '../pages/Profile';
 import DashboardPage from '../pages/DashboardPage';
 import UsersPage from '../pages/UsersPage';
 import CategoriesPage from '../pages/CategoriesPage';

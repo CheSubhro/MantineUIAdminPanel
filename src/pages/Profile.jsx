@@ -24,14 +24,9 @@ const ProfilePage = () => {
                         <EmptyState
                             title="Access Denied"
                             description="You must be logged in to view your profile details."
-                            action={
-                                <Button
-                                    color="violet"
-                                    onClick={() => navigate('/login')}
-                                >
-                                    Go to Login
-                                </Button>
-                            }
+                            actionText="Go to Login"
+                            onAction={() => navigate('/login')}
+                            actionColor="violet"
                         />
                     </div>
                 )}
