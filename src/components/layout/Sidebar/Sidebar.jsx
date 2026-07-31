@@ -13,11 +13,13 @@ import {
 } from '@tabler/icons-react';
 import { Tooltip, Button } from '../../common/index';
 import { useLocation, useNavigate } from 'react-router-dom';
+import { useAuth } from '../../../hooks/useAuth';
 
 export default function Sidebar({ onLogout }) {
 
     const navigate = useNavigate();
     const location = useLocation();
+    const { logout } = useAuth();
 
     const menuItems = [
         { id: 'dashboard', label: 'Dashboard', path: '/dashboard', icon: IconDashboard },
@@ -87,7 +89,7 @@ export default function Sidebar({ onLogout }) {
                     fullWidth
                     justify="flex-start"
                     leftSection={<IconLogout size={20} />}
-                    onClick={onLogout}
+                    onClick={logout} 
                 >
                     Logout
                 </Button>
