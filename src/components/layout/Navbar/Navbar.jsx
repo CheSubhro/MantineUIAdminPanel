@@ -52,7 +52,12 @@ export default function Navbar({ opened, toggle, user = { name: 'Admin User', ro
                         >
                             Profile
                         </Menu.Item>
-                        <Menu.Item leftSection={<IconSettings size={14} />}>Account Settings</Menu.Item>
+                        <Menu.Item
+                            leftSection={<IconSettings size={14} />}
+                            onClick={() => navigate('/account-settings')}
+                        >
+                            Account Settings
+                        </Menu.Item>
                         <Menu.Divider />
                         <Menu.Item color="red" leftSection={<IconLogout size={14} />}>
                             Logout
