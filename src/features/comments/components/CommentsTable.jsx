@@ -1,25 +1,13 @@
 
 import { Table, Group, Text, Badge as MantineBadge } from '@mantine/core';
-import { Button } from '../../../components/common';
+import { Button, Badge } from '../../../components/common';
 import { IconCheck, IconBan, IconTrash, IconMessageReply } from '@tabler/icons-react';
 
 export default function CommentsTable({ comments, onApprove, onSpam, onDelete, onReply }) {
+    
     if (comments.length === 0) {
         return <Text c="dimmed" ta="center" py="xl">No comments found.</Text>;
     }
-
-    const getStatusBadge = (status) => {
-        switch (status) {
-            case 'approved':
-                return <MantineBadge color="green">Approved</MantineBadge>;
-            case 'pending':
-                return <MantineBadge color="yellow">Pending</MantineBadge>;
-            case 'spam':
-                return <MantineBadge color="red">Spam</MantineBadge>;
-            default:
-                return <MantineBadge>Unknown</MantineBadge>;
-        }
-    };
 
     return (
         <Table verticalSpacing="sm" highlightOnHover>
@@ -47,7 +35,7 @@ export default function CommentsTable({ comments, onApprove, onSpam, onDelete, o
                             <Text size="sm" c="blue">{comment.postTitle}</Text>
                         </Table.Td>
                         <Table.Td>
-                            {getStatusBadge(comment.status)}
+                            <Badge>{comment.status}</Badge>
                         </Table.Td>
                         <Table.Td>
                             <Group gap="xs" justify="flex-end">

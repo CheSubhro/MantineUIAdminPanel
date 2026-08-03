@@ -60,10 +60,7 @@ function UserTableContent({
                 <Badge variant="light" color="blue">{user.role}</Badge>
             </Table.Td>
             <Table.Td>
-                <Badge
-                    variant="dot"
-                    color={user.status === 'Active' ? 'green' : 'red'}
-                >
+                <Badge variant="light" size="md">
                     {user.status}
                 </Badge>
             </Table.Td>

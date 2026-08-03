@@ -120,10 +120,7 @@ function PageTableContent({
                     <Text size="sm" c="dimmed">{page.updatedAt || 'N/A'}</Text>
                 </Table.Td>
                 <Table.Td>
-                    <Badge
-                        variant="dot"
-                        color={page.status === 'Published' ? 'green' : 'yellow'}
-                    >
+                    <Badge variant="light" size="md">
                         {page.status}
                     </Badge>
                 </Table.Td>

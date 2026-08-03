@@ -125,10 +125,7 @@ function PostsTableContent({
                     </Tooltip>
                 </Table.Td>
                 <Table.Td>
-                    <Badge
-                        variant="dot"
-                        color={post.status === 'Published' ? 'green' : 'yellow'}
-                    >
+                    <Badge variant="light" size="md">
                         {post.status}
                     </Badge>
                 </Table.Td>

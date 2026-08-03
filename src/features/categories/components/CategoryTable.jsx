@@ -122,10 +122,7 @@ function CategoryTableContent({
                     </Badge>
                 </Table.Td>
                 <Table.Td>
-                    <Badge
-                        variant="dot"
-                        color={category.status === 'Active' ? 'green' : 'red'}
-                    >
+                    <Badge variant="light" size="md">
                         {category.status}
                     </Badge>
                 </Table.Td>
