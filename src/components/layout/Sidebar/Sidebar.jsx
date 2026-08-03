@@ -11,7 +11,8 @@ import {
     IconBook,
     IconCategory,
     IconPhoto,
-    IconMessageCircle
+    IconMessageCircle,
+    IconWorld
 } from '@tabler/icons-react';
 import { Tooltip, Button } from '../../common/index';
 import { useLocation, useNavigate } from 'react-router-dom';
@@ -32,6 +33,7 @@ export default function Sidebar({ onLogout }) {
         { id: 'categories', label: 'Categories', path: '/categories', icon: IconCategory },
         { id: 'posts', label: 'Posts', path: '/posts', icon: IconArticle },
         { id: 'pages', label: 'Pages', path: '/pages', icon: IconBook },
+        { id: 'seo', label: 'SEO Management', path: '/seo', icon: IconWorld }, 
         { id: 'comments', label: 'Comments', path: '/comments', icon: IconMessageCircle },
         { id: 'media', label: 'Media Manager', path: '/media', icon: IconPhoto },
         { id: 'analytics', label: 'Analytics', path: '/analytics', icon: IconChartBar },

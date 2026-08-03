@@ -11,6 +11,7 @@ import UsersPage from '../pages/UsersPage';
 import CategoriesPage from '../pages/CategoriesPage';
 import PostsPage from '../pages/PostsPage';
 import PagesPage from '../pages/PagesPage';
+import SeoPage from '../pages/SeoPage';
 import AnalyticsPage from '../pages/AnalyticsPage';
 import ReportsPage from '../pages/ReportsPage';
 import SettingsPage from '../pages/SettingsPage';
@@ -20,6 +21,9 @@ import TermsOfServicePage from '../pages/TermsOfServicePage';
 
 import MediaManagerPage from '../pages/MediaManagerPage';
 import CommentsPage from '../pages/CommentsPage';
+
+import { useAuth } from '../hooks/useAuth';
+import { PERMISSIONS } from '../utils/permissions';
 
 export default function AppRoutes() {
     return (
@@ -35,6 +39,7 @@ export default function AppRoutes() {
             <Route path="/categories" element={<CategoriesPage />} />
             <Route path="/posts" element={<PostsPage />} />
             <Route path="/pages" element={<PagesPage />} />
+            <Route path="/seo" element={<SeoPage />} />
             <Route path="/analytics" element={<AnalyticsPage />} />
             <Route path="/reports" element={<ReportsPage />} />
             <Route path="/settings" element={<SettingsPage />} />
