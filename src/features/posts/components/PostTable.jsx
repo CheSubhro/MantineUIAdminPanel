@@ -15,6 +15,9 @@ import {
     Tooltip
 } from '../../../components/common';
 
+import { useAuth } from '../../../hooks/useAuth';
+import { PERMISSIONS } from '../../../utils/permissions';
+
 function PostsTableContent({
     posts,
     searchQuery,
@@ -25,6 +28,11 @@ function PostsTableContent({
     onBulkDeleteClick,
     loading = false
 }) {
+    const { user } = useAuth();
+    const userRole = user?.role || 'contributor';
+    const canPerformDelete = PERMISSIONS.canDelete(userRole);
+    const canManagePosts = PERMISSIONS.canPublish(userRole); 
+
     const [deleteId, setDeleteId] = useState(null);
     const [isConfirmOpen, setIsConfirmOpen] = useState(false);
     const [isBulkConfirmOpen, setIsBulkConfirmOpen] = useState(false);
@@ -93,13 +101,15 @@ function PostsTableContent({
         const isSelected = selectedIds.includes(post.id);
         return (
             <Table.Tr key={post.id} bg={isSelected ? 'var(--mantine-color-default-hover)' : undefined}>
-                <Table.Td>
-                    <Checkbox
-                        checked={isSelected}
-                        onChange={() => handleSelectOne(post.id)}
-                        aria-label="Select row"
-                    />
-                </Table.Td>
+                {canPerformDelete && (
+                    <Table.Td>
+                        <Checkbox
+                            checked={isSelected}
+                            onChange={() => handleSelectOne(post.id)}
+                            aria-label="Select row"
+                        />
+                    </Table.Td>
+                )}
                 <Table.Td>
                     <Group gap="sm">
                         <Avatar src={post.image} radius="sm" size="md" />
@@ -141,15 +151,17 @@ function PostsTableContent({
                             </ActionIcon>
                         </Tooltip>
 
-                        <Tooltip label="Delete Post" position="top">
-                            <ActionIcon
-                                variant="subtle"
-                                color="red"
-                                onClick={() => handleDeleteConfirmClick(post.id)}
-                            >
-                                <IconTrash size={18} />
-                            </ActionIcon>
-                        </Tooltip>
+                        {canPerformDelete && (
+                            <Tooltip label="Delete Post" position="top">
+                                <ActionIcon
+                                    variant="subtle"
+                                    color="red"
+                                    onClick={() => handleDeleteConfirmClick(post.id)}
+                                >
+                                    <IconTrash size={18} />
+                                </ActionIcon>
+                            </Tooltip>
+                        )}
                     </Group>
                 </Table.Td>
             </Table.Tr>
@@ -168,7 +180,7 @@ function PostsTableContent({
                         onChange={(e) => onSearchChange(e.target.value)}
                         w={{ base: '100%', sm: 320 }}
                     />
-                    {selectedIds.length > 0 && (
+                    {canPerformDelete && selectedIds.length > 0 && (
                         <Button
                             color="red"
                             variant="light"
@@ -180,13 +192,15 @@ function PostsTableContent({
                     )}
                 </Group>
 
-                <Button
-                    leftSection={<IconPlus size={16} />}
-                    onClick={onAddClick}
-                    color="violet"
-                >
-                    Add Post
-                </Button>
+                {canManagePosts && (
+                    <Button
+                        leftSection={<IconPlus size={16} />}
+                        onClick={onAddClick}
+                        color="violet"
+                    >
+                        Add Post
+                    </Button>
+                )}
             </Group>
 
             {/* Content / Table Area */}
@@ -200,14 +214,16 @@ function PostsTableContent({
                         <Table verticalSpacing="sm" highlightOnHover>
                             <Table.Thead>
                                 <Table.Tr>
-                                    <Table.Th style={{ width: 40 }}>
-                                        <Checkbox
-                                            checked={isAllSelected}
-                                            indeterminate={isIndeterminate}
-                                            onChange={handleSelectAll}
-                                            aria-label="Select all rows"
-                                        />
-                                    </Table.Th>
+                                    {canPerformDelete && (
+                                        <Table.Th style={{ width: 40 }}>
+                                            <Checkbox
+                                                checked={isAllSelected}
+                                                indeterminate={isIndeterminate}
+                                                onChange={handleSelectAll}
+                                                aria-label="Select all rows"
+                                            />
+                                        </Table.Th>
+                                    )}
                                     <Table.Th>Post</Table.Th>
                                     <Table.Th>Category</Table.Th>
                                     <Table.Th>Author</Table.Th>
@@ -238,33 +254,37 @@ function PostsTableContent({
                     icon={<IconFileText size={48} />}
                     title="No Posts Found"
                     description="We couldn't find any blog posts matching your search or criteria."
-                    actionText="Add Post"
-                    onAction={onAddClick}
+                    actionText={canManagePosts ? "Add Post" : undefined}
+                    onAction={canManagePosts ? onAddClick : undefined}
                     actionColor="violet"
                 />
             )}
 
             {/* Confirm Single Delete Modal */}
-            <ConfirmModal
-                isOpen={isConfirmOpen}
-                onClose={() => setIsConfirmOpen(false)}
-                onConfirm={handleConfirmDelete}
-                title="Delete Post"
-                message="Are you sure you want to delete this blog post? This action cannot be undone."
-                confirmText="Delete"
-                confirmColor="red"
-            />
+            {canPerformDelete && (
+                <ConfirmModal
+                    isOpen={isConfirmOpen}
+                    onClose={() => setIsConfirmOpen(false)}
+                    onConfirm={handleConfirmDelete}
+                    title="Delete Post"
+                    message="Are you sure you want to delete this blog post? This action cannot be undone."
+                    confirmText="Delete"
+                    confirmColor="red"
+                />
+            )}
 
             {/* Confirm Bulk Delete Modal */}
-            <ConfirmModal
-                isOpen={isBulkConfirmOpen}
-                onClose={() => setIsBulkConfirmOpen(false)}
-                onConfirm={handleConfirmBulkDelete}
-                title="Delete Selected Posts"
-                message={`Are you sure you want to delete ${selectedIds.length} selected blog posts? This action cannot be undone.`}
-                confirmText="Delete All"
-                confirmColor="red"
-            />
+            {canPerformDelete && (
+                <ConfirmModal
+                    isOpen={isBulkConfirmOpen}
+                    onClose={() => setIsBulkConfirmOpen(false)}
+                    onConfirm={handleConfirmBulkDelete}
+                    title="Delete Selected Posts"
+                    message={`Are you sure you want to delete ${selectedIds.length} selected blog posts? This action cannot be undone.`}
+                    confirmText="Delete All"
+                    confirmColor="red"
+                />
+            )}
         </Card>
     );
 }

@@ -6,6 +6,7 @@ import { useAuth } from '../hooks/useAuth';
 import LoginForm from '../features/auth/components/LoginForm';
 
 export default function Login() {
+    
     const { login, error } = useAuth();
     const navigate = useNavigate();
 

@@ -16,12 +16,15 @@ import {
 import { Tooltip, Button } from '../../common/index';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { useAuth } from '../../../hooks/useAuth';
+import { PERMISSIONS } from '../../../utils/permissions';
 
 export default function Sidebar({ onLogout }) {
 
     const navigate = useNavigate();
     const location = useLocation();
-    const { logout } = useAuth();
+    const { logout, user } = useAuth();
+
+    const userRole = user?.role || 'super_admin';
 
     const menuItems = [
         { id: 'dashboard', label: 'Dashboard', path: '/dashboard', icon: IconDashboard },
@@ -36,15 +39,19 @@ export default function Sidebar({ onLogout }) {
         { id: 'settings', label: 'Settings', path: '/settings', icon: IconSettings },
     ];
 
+    const filteredMenuItems = menuItems.filter((item) =>
+        PERMISSIONS.canAccessRoute(userRole, item.id)
+    );
+
     return (
         <Stack
-            h="100vh" 
+            h="100vh"
             justify="space-between"
             p="md"
             style={(theme) => ({
                 borderRight: '1px solid var(--mantine-color-default-border)',
                 backgroundColor: 'var(--mantine-color-body)',
-                overflow: 'hidden' 
+                overflow: 'hidden'
             })}
         >
             {/* Top Menu Links */}
@@ -52,15 +59,15 @@ export default function Sidebar({ onLogout }) {
                 gap="xs"
                 style={{
                     flex: 1,
-                    overflowY: 'auto', 
+                    overflowY: 'auto',
                     paddingRight: '4px'
                 }}
             >
                 <Text size="xs" fw={700} c="dimmed" tt="uppercase" mb="xs">
-                    Main Menu
+                    Main Menu ({userRole.replace('_', ' ')})
                 </Text>
 
-                {menuItems.map((item) => {
+                {filteredMenuItems.map((item) => {
                     const Icon = item.icon;
                     const isActive = location.pathname === item.path;
 
