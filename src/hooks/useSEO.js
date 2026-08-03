@@ -3,6 +3,7 @@ import { useState, useCallback } from 'react';
 import { showToast } from '../utils/toast';
 
 export function useSEO(initialData = {}) {
+    
     const [seoData, setSeoData] = useState({
         metaTitle: initialData.metaTitle || '',
         metaDescription: initialData.metaDescription || '',

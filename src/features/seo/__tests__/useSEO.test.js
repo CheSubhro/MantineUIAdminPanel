@@ -4,22 +4,16 @@ import { renderHook, act } from '@testing-library/react';
 import { useSEO } from '../../../hooks/useSEO';
 import { showToast } from '../../../utils/toast';
 
-// Mock the toast utility
-vi.mock('../utils/toast', () => ({
-    showToast: {
-        success: vi.fn(),
-    },
-}));
-
 describe('useSEO Custom Hook', () => {
 
     beforeEach(() => {
         vi.useFakeTimers();
+        vi.spyOn(showToast, 'success').mockImplementation(() => {});
     });
 
     afterEach(() => {
         vi.useRealTimers();
-        vi.clearAllMocks();
+        vi.restoreAllMocks();
     });
 
     it('should initialize with default or provided values', () => {
@@ -44,9 +38,9 @@ describe('useSEO Custom Hook', () => {
         const { result } = renderHook(() => useSEO());
 
         act(() => {
-            result.current.updateSeoField('metaTitle', 'Learn React SEO Optimization Step by Step'); // 44 chars -> 30 pts
-            result.current.updateSeoField('metaDescription', 'Discover how to effectively optimize your React application meta tags and search engine results pages visibility with proper guidelines.'); // 145 chars -> 40 pts
-            result.current.updateSeoField('focusKeyword', 'React SEO'); // Included in title -> 30 pts
+            result.current.updateSeoField('metaTitle', 'Learn React SEO Optimization Step by Step');
+            result.current.updateSeoField('metaDescription', 'Discover how to effectively optimize your React application meta tags and search engine results pages visibility with proper guidelines.');
+            result.current.updateSeoField('focusKeyword', 'React SEO');
         });
 
         expect(result.current.seoScore).toBe(100);
@@ -62,7 +56,6 @@ describe('useSEO Custom Hook', () => {
 
         expect(result.current.loading).toBe(true);
 
-        // Fast-forward timers
         act(() => {
             vi.advanceTimersByTime(500);
         });

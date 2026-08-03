@@ -13,7 +13,7 @@ export default function GlobalSeoSettings({ seoData, onChange, onGenerateSitemap
                         <IconRobot size={22} color="var(--mantine-color-blue-6)" />
                         <Text fw={600} size="lg">Global SEO Settings & Tools</Text>
                     </Group>
-                    <Badge color="gray" variant="light">System Level</Badge>
+                    <Badge color="green" variant="light">System Level</Badge>
                 </Group>
 
                 <Group align="flex-end" grow>
