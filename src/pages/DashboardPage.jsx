@@ -10,10 +10,12 @@ import TrafficChartCard from '../features/dashboard/components/TrafficChartCard'
 import TrafficSourcesCard from '../features/dashboard/components/TrafficSourcesCard';
 import RecentPostsCard from '../features/dashboard/components/RecentPostsCard';
 import RecentUsersCard from '../features/dashboard/components/RecentUsersCard';
+import RecentActivityCard from '../features/dashboard/components/RecentActivityCard';
 import { Spinner } from '../components/common';
 
 export default function DashboardPage() {
-    const { metrics, trafficSources, recentPosts, recentUsers, loading } = useDashboard();
+
+    const { metrics, trafficSources, recentPosts, recentActivity, recentUsers, loading } = useDashboard();
     const navigate = useNavigate();
 
     const handleNewPost = () => {
@@ -57,6 +59,13 @@ export default function DashboardPage() {
                 </Grid.Col>
                 <Grid.Col xs={12} md={6}>
                     <RecentUsersCard users={recentUsers} />
+                </Grid.Col>
+            </Grid>
+
+            {/* Audit Logs / System Activity Section */}
+            <Grid gutter="lg">
+                <Grid.Col xs={12}>
+                    <RecentActivityCard activities={recentActivity} />
                 </Grid.Col>
             </Grid>
         </Stack>

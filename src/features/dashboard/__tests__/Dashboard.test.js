@@ -42,4 +42,12 @@ describe('useDashboard Custom Hook', () => {
         expect(result.current.recentUsers[0].name).toBe('Alex Johnson');
         expect(result.current.recentUsers[0].email).toBe('alex@example.com');
     });
+
+    it('should return recent activity audit logs successfully', () => {
+        const { result } = renderHook(() => useDashboard());
+
+        expect(result.current.recentActivity).toHaveLength(3);
+        expect(result.current.recentActivity[0].user).toBe('Subhro Mondal');
+        expect(result.current.recentActivity[0].type).toBe('edit');
+    });
 });

@@ -27,6 +27,36 @@ export const useDashboard = () => {
         { id: 3, name: 'Michael Brown', email: 'michael@example.com' }
     ]);
 
+    const [recentActivity, setRecentActivity] = useState([
+        { 
+            id: 1, 
+            user: 'Subhro Mondal', 
+            role: 'Admin', 
+            action: 'Updated post "Mastering React and Vite"', 
+            ip: '192.168.1.15', 
+            time: '10 mins ago',
+            type: 'edit' 
+        },
+        { 
+            id: 2, 
+            user: 'Sarah Smith', 
+            role: 'Editor', 
+            action: 'Logged into the system successfully', 
+            ip: '192.168.1.42', 
+            time: '25 mins ago',
+            type: 'login' 
+        },
+        { 
+            id: 3, 
+            user: 'Admin Root', 
+            role: 'Super Admin', 
+            action: 'Deleted post ID #18 ("Old CSS Tricks")', 
+            ip: '10.0.0.8', 
+            time: '1 hour ago',
+            type: 'delete' 
+        }
+    ]);
+
     const [loading, setLoading] = useState(false);
 
     useEffect(() => {
@@ -37,6 +67,7 @@ export const useDashboard = () => {
         trafficSources,
         recentPosts,
         recentUsers,
+        recentActivity, 
         loading
     };
 };
