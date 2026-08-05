@@ -2,6 +2,7 @@
 import { useState, useEffect } from 'react';
 
 export const useDashboard = () => {
+    
     const [metrics, setMetrics] = useState({
         totalViews: 45230,
         uniqueVisitors: 12450,
@@ -57,6 +58,21 @@ export const useDashboard = () => {
         }
     ]);
 
+    const [categoriesData, setCategoriesData] = useState([
+        { name: 'React', value: 45 },
+        { name: 'UI/UX', value: 25 },
+        { name: 'JavaScript', value: 20 },
+        { name: 'Node.js', value: 10 }
+    ]);
+
+    const [topPosts, setTopPosts] = useState([
+        { title: 'Mastering React', views: 4200 },
+        { title: 'Vite Guide', views: 3800 },
+        { title: 'Tailwind Tips', views: 3100 },
+        { title: 'Node.js API', views: 2400 },
+        { title: 'CSS Layouts', views: 1900 }
+    ]);
+
     const [loading, setLoading] = useState(false);
 
     useEffect(() => {
@@ -68,6 +84,8 @@ export const useDashboard = () => {
         recentPosts,
         recentUsers,
         recentActivity, 
+        categoriesData, 
+        topPosts,
         loading
     };
 };

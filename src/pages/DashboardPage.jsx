@@ -2,20 +2,30 @@
 import React from 'react';
 import { Stack, Grid } from '@mantine/core';
 import { useNavigate } from 'react-router-dom';
-
 import { useDashboard } from '../hooks/useDashboard';
 import DashboardHeader from '../features/dashboard/components/DashboardHeader';
 import DashboardMetrics from '../features/dashboard/components/DashboardMetrics';
 import TrafficChartCard from '../features/dashboard/components/TrafficChartCard';
 import TrafficSourcesCard from '../features/dashboard/components/TrafficSourcesCard';
+import TopPostsBarChart from '../features/dashboard/components/TopPostsBarChart';
+import CategoriesChartCard from '../features/dashboard/components/CategoriesChartCard';
 import RecentPostsCard from '../features/dashboard/components/RecentPostsCard';
 import RecentUsersCard from '../features/dashboard/components/RecentUsersCard';
 import RecentActivityCard from '../features/dashboard/components/RecentActivityCard';
 import { Spinner } from '../components/common';
 
 export default function DashboardPage() {
+    const {
+        metrics,
+        trafficSources,
+        categoriesData,
+        topPosts,
+        recentPosts,
+        recentActivity,
+        recentUsers,
+        loading
+    } = useDashboard();
 
-    const { metrics, trafficSources, recentPosts, recentActivity, recentUsers, loading } = useDashboard();
     const navigate = useNavigate();
 
     const handleNewPost = () => {
@@ -42,7 +52,7 @@ export default function DashboardPage() {
             {/* Metric Cards */}
             <DashboardMetrics metrics={metrics} />
 
-            {/* Analytics Charts Section */}
+            {/* Analytics Charts Section (Part 1: Traffic Overview & Sources) */}
             <Grid gutter="lg">
                 <Grid.Col xs={12} lg={8}>
                     <TrafficChartCard />
@@ -51,6 +61,16 @@ export default function DashboardPage() {
                     <TrafficSourcesCard trafficSources={trafficSources} />
                 </Grid.Col>
             </Grid>
+
+            {/* Analytics Charts Section (Part 2: Top Posts & Categories Side-by-Side) */}
+            <div style={{ display: 'flex', gap: '20px', width: '100%', flexWrap: 'wrap' }}>
+                <div style={{ flex: '1 1 65%', minWidth: '300px' }}>
+                    <TopPostsBarChart topPosts={topPosts} />
+                </div>
+                <div style={{ flex: '1 1 30%', minWidth: '300px' }}>
+                    <CategoriesChartCard categoriesData={categoriesData} />
+                </div>
+            </div>
 
             {/* Recent Activities & Lists Section */}
             <Grid gutter="lg">
