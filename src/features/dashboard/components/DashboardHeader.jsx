@@ -1,26 +1,60 @@
 
 import React from 'react';
-import { Button, Tooltip, Badge } from '../../../components/common';
+import { Group, Title, Text, Button, Select, Badge } from '@mantine/core';
+import { IconPlus } from '@tabler/icons-react';
 
-export default function DashboardHeader({ title, subtitle, onNewPost }) {
-    
+export default function DashboardHeader({
+    title = "Dashboard Overview",
+    subtitle = "Welcome back, Subhro! Here's what's happening with your content today.",
+    onNewPost,
+    timeRange,
+    onTimeRangeChange
+}) {
     return (
-        <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 bg-white dark:bg-gray-800 p-4 rounded-xl shadow-sm border border-gray-100 dark:border-gray-700">
+        <Group
+            justify="space-between"
+            mb="lg"
+            align="center"
+            className="p-4 rounded-xl border bg-white dark:bg-gray-800 border-gray-100 dark:border-gray-700"
+        >
             <div>
-                <div className="flex items-center gap-2">
-                    <h1 className="text-2xl font-bold text-gray-800 dark:text-white">{title}</h1>
-                    <Badge color="blue">Live</Badge>
-                </div>
-                <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">{subtitle}</p>
+                <Group gap="xs" align="center">
+                    <Title order={2} className="text-xl font-bold text-gray-800 dark:text-white">
+                        {title}
+                    </Title>
+                    <Badge color="blue" variant="light">Live</Badge>
+                </Group>
+                <Text size="xs" c="dimmed" mt={2}>
+                    {subtitle}
+                </Text>
             </div>
 
-            <div className="flex items-center gap-3">
-                <Tooltip label="Create a brand new blog post or article">
-                    <Button color="violet" onClick={onNewPost}>
-                        + New Post
-                    </Button>
-                </Tooltip>
-            </div>
-        </div>
+            <Group gap="sm">
+                {/* Time Range Filter Dropdown */}
+                <Select
+                    value={timeRange}
+                    onChange={onTimeRangeChange}
+                    defaultValue="7days"
+                    data={[
+                        { value: '7days', label: 'Last 7 Days' },
+                        { value: '30days', label: 'Last 30 Days' },
+                        { value: '3months', label: 'Last 3 Months' },
+                        { value: 'year', label: 'This Year' },
+                    ]}
+                    w={150}
+                    size="sm"
+                />
+
+                {/* Quick Action Button */}
+                <Button
+                    leftSection={<IconPlus size={16} />}
+                    color="violet"
+                    size="sm"
+                    onClick={onNewPost}
+                >
+                    New Post
+                </Button>
+            </Group>
+        </Group>
     );
 }
