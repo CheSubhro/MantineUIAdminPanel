@@ -1,7 +1,9 @@
 
 import { useState, useEffect } from 'react';
-import { Stack, Group, Text, Avatar, FileButton } from '@mantine/core';
-import { IconUpload, IconX } from '@tabler/icons-react';
+import { Stack, Group, Text, Avatar, FileButton, Box } from '@mantine/core';
+import { IconUpload } from '@tabler/icons-react';
+import { useEditor, EditorContent } from '@tiptap/react';
+import StarterKit from '@tiptap/starter-kit';
 import {
     Modal,
     Input,
@@ -21,14 +23,30 @@ function PostModalContent({
         title: '',
         slug: '',
         excerpt: '',
+        content: '',
         category: 'Technology',
         author: 'Subhro Mondal',
-        image: null, 
-        existingImage: '', 
+        image: null,
+        existingImage: '',
         status: 'Published',
     });
 
     const [errors, setErrors] = useState({});
+
+    // Tiptap Editor Hook Setup
+    const editor = useEditor({
+        extensions: [StarterKit],
+        content: formData.content,
+        onUpdate: ({ editor }) => {
+            const html = editor.getHTML();
+            setFormData((prev) => ({ ...prev, content: html }));
+        },
+        editorProps: {
+            attributes: {
+                style: 'min-height: 120px; outline: none; padding: 8px; white-space: pre-wrap;',
+            },
+        },
+    });
 
     const categoryOptions = categories.length > 0
         ? categories.map(cat => ({ value: cat.name, label: cat.name }))
@@ -50,32 +68,38 @@ function PostModalContent({
                 title: postToEdit.title || '',
                 slug: postToEdit.slug || '',
                 excerpt: postToEdit.excerpt || '',
+                content: postToEdit.content || '',
                 category: postToEdit.category || 'Technology',
                 author: postToEdit.author || 'Subhro Mondal',
                 image: null,
                 existingImage: postToEdit.image || '',
                 status: postToEdit.status || 'Published',
             });
+            if (editor && postToEdit.content) {
+                editor.commands.setContent(postToEdit.content);
+            }
         } else {
             setFormData({
                 title: '',
                 slug: '',
                 excerpt: '',
+                content: '',
                 category: 'Technology',
                 author: 'Subhro Mondal',
                 image: null,
                 existingImage: '',
                 status: 'Published',
             });
+            if (editor) {
+                editor.commands.setContent('');
+            }
         }
         setErrors({});
-    }, [postToEdit, isOpen]);
+    }, [postToEdit, isOpen, editor]);
 
     const handleChange = (field, value) => {
         setFormData((prev) => {
             const updated = { ...prev, [field]: value };
-
-            // Auto-generate slug from title if creating a new post
             if (field === 'title' && !postToEdit) {
                 updated.slug = value
                     .toLowerCase()
@@ -88,9 +112,6 @@ function PostModalContent({
         if (errors[field]) {
             setErrors((prev) => ({ ...prev, [field]: null }));
         }
-        if (field === 'title' && errors.slug && !postToEdit) {
-            setErrors((prev) => ({ ...prev, slug: null }));
-        }
     };
 
     const handleFileChange = (file) => {
@@ -99,7 +120,7 @@ function PostModalContent({
             setFormData((prev) => ({
                 ...prev,
                 image: file,
-                existingImage: fileUrl, 
+                existingImage: fileUrl,
             }));
         }
     };
@@ -130,7 +151,7 @@ function PostModalContent({
             isOpen={isOpen}
             onClose={onClose}
             title={postToEdit ? 'Edit Blog Post' : 'Add New Blog Post'}
-            size="md"
+            size="lg"
         >
             <form onSubmit={handleSubmit}>
                 <Stack gap="md">
@@ -152,7 +173,7 @@ function PostModalContent({
                         required
                     />
 
-                    <Group grow>
+                    <Group grow preventGrowOverflow={false}>
                         <CustomSelect
                             label="Category"
                             placeholder="Select category"
@@ -202,11 +223,26 @@ function PostModalContent({
                     </div>
 
                     <Input
-                        label="Excerpt / Description"
+                        label="Excerpt / Short Summary"
                         placeholder="Write a short summary of the post..."
                         value={formData.excerpt}
                         onChange={(e) => handleChange('excerpt', e.target.value)}
                     />
+
+                    {/* Tiptap Rich Text Editor Box */}
+                    <div>
+                        <Text size="sm" fw={500} mb={5}>Post Content</Text>
+                        <Box
+                            style={{
+                                border: '1px solid var(--mantine-color-default-border)',
+                                borderRadius: 'var(--mantine-radius-default)',
+                                backgroundColor: 'var(--mantine-color-body)',
+                                overflow: 'hidden',
+                            }}
+                        >
+                            <EditorContent editor={editor} />
+                        </Box>
+                    </div>
 
                     <Group justify="flex-end" mt="md">
                         <Button variant="subtle" onClick={onClose} type="button" color="gray">
