@@ -23,8 +23,8 @@ function PostModalContent({
         excerpt: '',
         category: 'Technology',
         author: 'Subhro Mondal',
-        image: null, // ফাইলের জন্য ইনিশিয়াল স্টেট null
-        existingImage: '', // এডিট করার সময় আগের ছবি স্টোর করার জন্য
+        image: null, 
+        existingImage: '', 
         status: 'Published',
     });
 
@@ -95,12 +95,11 @@ function PostModalContent({
 
     const handleFileChange = (file) => {
         if (file) {
-            // লোকাল প্রিভিউ বা ফাইল অবজেক্ট সেভ করা
             const fileUrl = URL.createObjectURL(file);
             setFormData((prev) => ({
                 ...prev,
                 image: file,
-                existingImage: fileUrl, // প্রিভিউ দেখানোর জন্য
+                existingImage: fileUrl, 
             }));
         }
     };
@@ -117,7 +116,6 @@ function PostModalContent({
     const handleSubmit = (e) => {
         e.preventDefault();
         if (validate()) {
-            // সেভ করার সময় ডেটা পাস করা (যদি নতুন ফাইল না থাকে তবে আগেরটাই থেকে যাবে)
             const payload = {
                 ...formData,
                 image: formData.image ? URL.createObjectURL(formData.image) : formData.existingImage
