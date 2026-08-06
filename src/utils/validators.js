@@ -80,7 +80,7 @@ export const registerFormSchema = z.object({
     role: z.string().min(1, 'Role is required'),
 });
 
-// --- 10. Login Form Validation ---
+// --- Login Form Validation ---
 export const loginFormSchema = z.object({
     identifier: z.string().min(1, 'Username or email is required'),
     password: z.string().min(1, 'Password is required'),
