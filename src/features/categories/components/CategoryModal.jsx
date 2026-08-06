@@ -1,5 +1,7 @@
 
-import { useState, useEffect } from 'react';
+import React, { useEffect } from 'react';
+import { useForm, Controller } from 'react-hook-form';
+import { zodResolver } from '@hookform/resolvers/zod';
 import { Stack, Group } from '@mantine/core';
 import {
     Modal,
@@ -8,7 +10,7 @@ import {
     Button,
     ErrorBoundary
 } from '../../../components/common';
-import { categoryFormSchema, formatZodErrors } from '../../../utils/validators';
+import { categoryFormSchema } from '../../../utils/validators';
 
 function CategoryModalContent({
     isOpen,
@@ -16,19 +18,27 @@ function CategoryModalContent({
     onSave,
     categoryToEdit = null
 }) {
-    const [formData, setFormData] = useState({
-        name: '',
-        slug: '',
-        description: '',
-        image: '',
-        status: 'Active',
+    const {
+        control,
+        register,
+        handleSubmit,
+        reset,
+        setValue,
+        formState: { errors },
+    } = useForm({
+        resolver: zodResolver(categoryFormSchema),
+        defaultValues: {
+            name: '',
+            slug: '',
+            description: '',
+            image: '',
+            status: 'Active',
+        },
     });
-
-    const [errors, setErrors] = useState({});
 
     useEffect(() => {
         if (categoryToEdit) {
-            setFormData({
+            reset({
                 id: categoryToEdit.id,
                 name: categoryToEdit.name || '',
                 slug: categoryToEdit.slug || '',
@@ -37,7 +47,7 @@ function CategoryModalContent({
                 status: categoryToEdit.status || 'Active',
             });
         } else {
-            setFormData({
+            reset({
                 name: '',
                 slug: '',
                 description: '',
@@ -45,43 +55,25 @@ function CategoryModalContent({
                 status: 'Active',
             });
         }
-        setErrors({});
-    }, [categoryToEdit, isOpen]);
+    }, [categoryToEdit, isOpen, reset]);
 
-    const handleChange = (field, value) => {
-        setFormData((prev) => {
-            const updated = { ...prev, [field]: value };
+    const handleNameChange = (e) => {
+        const value = e.target.value;
+        setValue('name', value, { shouldValidate: true });
 
-            // Auto-generate slug from name if creating a new category
-            if (field === 'name' && !categoryToEdit) {
-                updated.slug = value
-                    .toLowerCase()
-                    .replace(/[^a-z0-9]+/g, '-')
-                    .replace(/(^-|-$)/g, '');
-            }
-            return updated;
-        });
-
-        if (errors[field]) {
-            setErrors((prev) => ({ ...prev, [field]: null }));
-        }
-        if (field === 'name' && errors.slug && !categoryToEdit) {
-            setErrors((prev) => ({ ...prev, slug: null }));
+        // Auto-generate slug from name if creating a new category
+        if (!categoryToEdit) {
+            const generatedSlug = value
+                .toLowerCase()
+                .replace(/[^a-z0-9]+/g, '-')
+                .replace(/(^-|-$)/g, '');
+            setValue('slug', generatedSlug, { shouldValidate: true });
         }
     };
 
-    const validate = () => {
-        const validationErrors = formatZodErrors(categoryFormSchema, formData);
-        setErrors(validationErrors);
-        return Object.keys(validationErrors).length === 0;
-    };
-
-    const handleSubmit = (e) => {
-        e.preventDefault();
-        if (validate()) {
-            onSave(formData);
-            onClose();
-        }
+    const handleFormSubmit = (data) => {
+        onSave(data);
+        onClose();
     };
 
     const statusOptions = [
@@ -96,46 +88,53 @@ function CategoryModalContent({
             title={categoryToEdit ? 'Edit Category' : 'Add New Category'}
             size="md"
         >
-            <form onSubmit={handleSubmit}>
+            <form onSubmit={handleSubmit(handleFormSubmit)}>
                 <Stack gap="md">
                     <Input
                         label="Category Name"
                         placeholder="e.g. Technology"
-                        value={formData.name}
-                        onChange={(e) => handleChange('name', e.target.value)}
-                        error={errors.name}
+                        error={errors.name?.message}
                         required
+                        {...register('name', {
+                            onChange: handleNameChange,
+                        })}
                     />
 
                     <Input
                         label="Slug"
                         placeholder="e.g. technology"
-                        value={formData.slug}
-                        onChange={(e) => handleChange('slug', e.target.value)}
-                        error={errors.slug}
+                        error={errors.slug?.message}
                         required
+                        {...register('slug')}
                     />
 
                     <Input
                         label="Image URL"
                         placeholder="https://example.com/image.jpg"
-                        value={formData.image}
-                        onChange={(e) => handleChange('image', e.target.value)}
+                        error={errors.image?.message}
+                        {...register('image')}
                     />
 
-                    <CustomSelect
-                        label="Status"
-                        placeholder="Select status"
-                        data={statusOptions}
-                        value={formData.status}
-                        onChange={(value) => handleChange('status', value)}
+                    <Controller
+                        name="status"
+                        control={control}
+                        render={({ field }) => (
+                            <CustomSelect
+                                label="Status"
+                                placeholder="Select status"
+                                data={statusOptions}
+                                value={field.value}
+                                onChange={field.onChange}
+                                error={errors.status?.message}
+                            />
+                        )}
                     />
 
                     <Input
                         label="Description"
                         placeholder="Write a short description..."
-                        value={formData.description}
-                        onChange={(e) => handleChange('description', e.target.value)}
+                        error={errors.description?.message}
+                        {...register('description')}
                     />
 
                     <Group justify="flex-end" mt="md">
