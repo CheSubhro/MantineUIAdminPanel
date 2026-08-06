@@ -11,7 +11,6 @@ import {
     Button,
     ErrorBoundary
 } from '../../../components/common';
-// Zod স্কিমা এবং ফরম্যাট ফাংশন ইমপোর্ট করুন (আপনার পাথ অনুযায়ী ঠিক করে নেবেন)
 import { postFormSchema, formatZodErrors } from '../../../utils/validators';
 
 function PostModalContent({
@@ -127,7 +126,6 @@ function PostModalContent({
         }
     };
 
-    // Zod ব্যবহার করে ভ্যালিডেশন হ্যান্ডেল করা হচ্ছে
     const validate = () => {
         const validationErrors = formatZodErrors(postFormSchema, formData);
         setErrors(validationErrors);

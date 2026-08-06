@@ -8,6 +8,7 @@ import {
     Button,
     ErrorBoundary
 } from '../../../components/common';
+import { pageFormSchema, formatZodErrors } from '../../../utils/validators';
 
 function PageModalContent({
     isOpen,
@@ -75,12 +76,9 @@ function PageModalContent({
     };
 
     const validate = () => {
-        const newErrors = {};
-        if (!formData.title.trim()) newErrors.title = 'Page title is required';
-        if (!formData.slug.trim()) newErrors.slug = 'Slug is required';
-        if (!formData.author.trim()) newErrors.author = 'Author name is required';
-        setErrors(newErrors);
-        return Object.keys(newErrors).length === 0;
+        const validationErrors = formatZodErrors(pageFormSchema, formData);
+        setErrors(validationErrors);
+        return Object.keys(validationErrors).length === 0;
     };
 
     const handleSubmit = (e) => {
