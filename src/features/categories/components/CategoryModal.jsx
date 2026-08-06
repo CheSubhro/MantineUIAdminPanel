@@ -8,6 +8,7 @@ import {
     Button,
     ErrorBoundary
 } from '../../../components/common';
+import { categoryFormSchema, formatZodErrors } from '../../../utils/validators';
 
 function CategoryModalContent({
     isOpen,
@@ -70,11 +71,9 @@ function CategoryModalContent({
     };
 
     const validate = () => {
-        const newErrors = {};
-        if (!formData.name.trim()) newErrors.name = 'Category name is required';
-        if (!formData.slug.trim()) newErrors.slug = 'Slug is required';
-        setErrors(newErrors);
-        return Object.keys(newErrors).length === 0;
+        const validationErrors = formatZodErrors(categoryFormSchema, formData);
+        setErrors(validationErrors);
+        return Object.keys(validationErrors).length === 0;
     };
 
     const handleSubmit = (e) => {
