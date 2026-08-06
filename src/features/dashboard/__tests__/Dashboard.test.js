@@ -1,12 +1,16 @@
 
 import { describe, it, expect } from 'vitest';
-import { renderHook } from '@testing-library/react';
+import { renderHook, waitFor } from '@testing-library/react';
 import { useDashboard } from '../../../hooks/useDashboard'; 
 
 describe('useDashboard Custom Hook', () => {
 
-    it('should initialize with correct default metrics and loading state', () => {
+    it('should initialize with correct default metrics and loading state', async () => {
         const { result } = renderHook(() => useDashboard());
+
+        await waitFor(() => {
+            expect(result.current.loading).toBe(false);
+        });
 
         expect(result.current.metrics).toEqual({
             totalViews: 45230,
@@ -14,7 +18,6 @@ describe('useDashboard Custom Hook', () => {
             totalPosts: 24,
             totalUsers: 142
         });
-        expect(result.current.loading).toBe(false);
     });
 
     it('should return correct traffic sources data', () => {
