@@ -4,19 +4,22 @@ import { Title, Text, Grid, Group, Divider, Box, PasswordInput } from '@mantine/
 import { Card, Button, ThemeToggle } from '../../../components/common';
 
 const SecuritySection = ({ form, onSubmit, loading }) => {
+    const { register, handleSubmit, formState: { errors } } = form;
+
     return (
         <Card shadow="sm" padding="lg" radius="md" withBorder mb="lg">
             <Title order={3} mb="md">2. Security Settings</Title>
 
             <Text fw={500} size="sm" mb="sm">Change Password</Text>
 
-            <form onSubmit={form.onSubmit ? form.onSubmit(onSubmit) : (e) => { e.preventDefault(); onSubmit(form.values); }}>
+            <form onSubmit={handleSubmit(onSubmit)}>
                 <Grid>
                     <Grid.Col span={{ base: 12, sm: 4 }}>
                         <PasswordInput
                             label="Current Password"
                             placeholder="Current password"
-                            {...form.getInputProps?.('currentPassword') || {}}
+                            error={errors.currentPassword?.message}
+                            {...register('currentPassword')}
                         />
                     </Grid.Col>
 
@@ -24,7 +27,8 @@ const SecuritySection = ({ form, onSubmit, loading }) => {
                         <PasswordInput
                             label="New Password"
                             placeholder="New password"
-                            {...form.getInputProps?.('newPassword') || {}}
+                            error={errors.newPassword?.message}
+                            {...register('newPassword')}
                         />
                     </Grid.Col>
 
@@ -32,7 +36,8 @@ const SecuritySection = ({ form, onSubmit, loading }) => {
                         <PasswordInput
                             label="Confirm New Password"
                             placeholder="Retype new password"
-                            {...form.getInputProps?.('confirmPassword') || {}}
+                            error={errors.confirmPassword?.message}
+                            {...register('confirmPassword')}
                         />
                     </Grid.Col>
                 </Grid>

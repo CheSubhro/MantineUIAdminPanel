@@ -4,6 +4,7 @@ import { Title, Text, Group, Box, Stack } from '@mantine/core';
 import { Card, Button, Modal, Input } from '../../../components/common';
 
 const DangerZoneSection = ({ onDeleteAccount, loading }) => {
+    
     const [deleteModalOpened, setDeleteModalOpened] = useState(false);
     const [deleteConfirmText, setDeleteConfirmText] = useState('');
 
