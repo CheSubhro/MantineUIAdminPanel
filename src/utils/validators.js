@@ -101,6 +101,7 @@ export const isValidEmail = (email) => {
 export const ALLOWED_IMAGE_TYPES = ['image/jpeg', 'image/png', 'image/webp'];
 export const MAX_FILE_SIZE = 5 * 1024 * 1024; // 5MB
 
+// Standalone function for single file checks
 export function validateMediaFile(file) {
     if (!file) {
         return { isValid: false, message: 'No file provided.' };
@@ -113,6 +114,14 @@ export function validateMediaFile(file) {
     }
     return { isValid: true, message: 'File is valid.' };
 }
+
+// Zod Schema for React Hook Form integration
+export const mediaUploadSchema = z.object({
+    files: z.array(z.any())
+        .min(1, 'No file provided.')
+        .refine((files) => files.every((f) => ALLOWED_IMAGE_TYPES.includes(f.type)), 'Invalid file type. Only JPEG, PNG, and WEBP are allowed.')
+        .refine((files) => files.every((f) => f.size <= MAX_FILE_SIZE), 'File size exceeds the 5MB limit.'),
+});
 
 export const formatZodErrors = (schema, values) => {
     const result = schema.safeParse(values);

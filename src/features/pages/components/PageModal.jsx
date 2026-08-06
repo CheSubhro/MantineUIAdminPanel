@@ -1,5 +1,7 @@
 
-import { useState, useEffect } from 'react';
+import React, { useEffect } from 'react';
+import { useForm, Controller } from 'react-hook-form';
+import { zodResolver } from '@hookform/resolvers/zod';
 import { Stack, Group } from '@mantine/core';
 import {
     Modal,
@@ -8,7 +10,7 @@ import {
     Button,
     ErrorBoundary
 } from '../../../components/common';
-import { pageFormSchema, formatZodErrors } from '../../../utils/validators';
+import { pageFormSchema } from '../../../utils/validators';
 
 function PageModalContent({
     isOpen,
@@ -16,15 +18,26 @@ function PageModalContent({
     onSave,
     pageToEdit = null
 }) {
-    const [formData, setFormData] = useState({
-        title: '',
-        slug: '',
-        excerpt: '',
-        author: 'Subhro Mondal',
-        status: 'Published',
+    const {
+        register,
+        handleSubmit,
+        control,
+        setValue,
+        watch,
+        reset,
+        formState: { errors },
+    } = useForm({
+        resolver: zodResolver(pageFormSchema),
+        defaultValues: {
+            title: '',
+            slug: '',
+            excerpt: '',
+            author: 'Subhro Mondal',
+            status: 'Published',
+        },
     });
 
-    const [errors, setErrors] = useState({});
+    const watchedTitle = watch('title');
 
     const statusOptions = [
         { value: 'Published', label: 'Published' },
@@ -33,7 +46,7 @@ function PageModalContent({
 
     useEffect(() => {
         if (pageToEdit) {
-            setFormData({
+            reset({
                 id: pageToEdit.id,
                 title: pageToEdit.title || '',
                 slug: pageToEdit.slug || '',
@@ -42,7 +55,7 @@ function PageModalContent({
                 status: pageToEdit.status || 'Published',
             });
         } else {
-            setFormData({
+            reset({
                 title: '',
                 slug: '',
                 excerpt: '',
@@ -50,48 +63,28 @@ function PageModalContent({
                 status: 'Published',
             });
         }
-        setErrors({});
-    }, [pageToEdit, isOpen]);
+    }, [pageToEdit, isOpen, reset]);
 
-    const handleChange = (field, value) => {
-        setFormData((prev) => {
-            const updated = { ...prev, [field]: value };
-
-            // Auto-generate slug from title if creating a new page
-            if (field === 'title' && !pageToEdit) {
-                updated.slug = value
-                    .toLowerCase()
-                    .replace(/[^a-z0-9]+/g, '-')
-                    .replace(/(^-|-$)/g, '');
-            }
-            return updated;
-        });
-
-        if (errors[field]) {
-            setErrors((prev) => ({ ...prev, [field]: null }));
+    // Auto-generate slug from title if creating a new page
+    useEffect(() => {
+        if (!pageToEdit && watchedTitle) {
+            const generatedSlug = watchedTitle
+                .toLowerCase()
+                .replace(/[^a-z0-9]+/g, '-')
+                .replace(/(^-|-$)/g, '');
+            setValue('slug', generatedSlug, { shouldValidate: true });
         }
-        if (field === 'title' && errors.slug && !pageToEdit) {
-            setErrors((prev) => ({ ...prev, slug: null }));
-        }
-    };
+    }, [watchedTitle, pageToEdit, setValue]);
 
-    const validate = () => {
-        const validationErrors = formatZodErrors(pageFormSchema, formData);
-        setErrors(validationErrors);
-        return Object.keys(validationErrors).length === 0;
-    };
-
-    const handleSubmit = (e) => {
-        e.preventDefault();
-        if (validate()) {
-            const currentDate = new Date().toISOString().split('T')[0];
-            const payload = {
-                ...formData,
-                updatedAt: currentDate,
-            };
-            onSave(payload);
-            onClose();
-        }
+    const handleFormSubmit = (data) => {
+        const currentDate = new Date().toISOString().split('T')[0];
+        const payload = {
+            ...data,
+            ...(pageToEdit?.id && { id: pageToEdit.id }),
+            updatedAt: currentDate,
+        };
+        onSave(payload);
+        onClose();
     };
 
     return (
@@ -101,50 +94,53 @@ function PageModalContent({
             title={pageToEdit ? 'Edit Website Page' : 'Add New Website Page'}
             size="md"
         >
-            <form onSubmit={handleSubmit}>
+            <form onSubmit={handleSubmit(handleFormSubmit)}>
                 <Stack gap="md">
                     <Input
                         label="Page Title"
                         placeholder="e.g. Privacy Policy"
-                        value={formData.title}
-                        onChange={(e) => handleChange('title', e.target.value)}
-                        error={errors.title}
+                        error={errors.title?.message}
                         required
+                        {...register('title')}
                     />
 
                     <Input
                         label="Slug"
                         placeholder="e.g. privacy-policy"
-                        value={formData.slug}
-                        onChange={(e) => handleChange('slug', e.target.value)}
-                        error={errors.slug}
+                        error={errors.slug?.message}
                         required
+                        {...register('slug')}
                     />
 
                     <Group grow>
-                        <CustomSelect
-                            label="Status"
-                            placeholder="Select status"
-                            data={statusOptions}
-                            value={formData.status}
-                            onChange={(value) => handleChange('status', value)}
+                        <Controller
+                            name="status"
+                            control={control}
+                            render={({ field }) => (
+                                <CustomSelect
+                                    label="Status"
+                                    placeholder="Select status"
+                                    data={statusOptions}
+                                    value={field.value}
+                                    onChange={field.onChange}
+                                />
+                            )}
                         />
 
                         <Input
                             label="Author"
                             placeholder="e.g. Subhro Mondal"
-                            value={formData.author}
-                            onChange={(e) => handleChange('author', e.target.value)}
-                            error={errors.author}
+                            error={errors.author?.message}
                             required
+                            {...register('author')}
                         />
                     </Group>
 
                     <Input
                         label="Excerpt / Summary"
                         placeholder="Write a short summary of the page..."
-                        value={formData.excerpt}
-                        onChange={(e) => handleChange('excerpt', e.target.value)}
+                        error={errors.excerpt?.message}
+                        {...register('excerpt')}
                     />
 
                     <Group justify="flex-end" mt="md">
