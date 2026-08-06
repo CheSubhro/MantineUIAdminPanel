@@ -33,7 +33,7 @@ export const pageFormSchema = z.object({
 
 // --- 5. Time Range Validation ---
 export function validateTimeRange(timeRange) {
-    const validRanges = ['7days', '30days', '1year'];
+    const validRanges = ['7days', '30days', '3months', 'year'];
     return validRanges.includes(timeRange) ? timeRange : '7days';
 }
 
@@ -62,34 +62,27 @@ export const settingsFormSchema = z.object({
     tagline: z.string().min(1, 'Tagline is required').min(3, 'Tagline must be at least 3 characters long'),
     timezone: z.string().min(1, 'Timezone is required'),
     language: z.string().min(1, 'Default language is required'),
-    
     passwordExpireDays: z.coerce.number()
         .min(1, 'Password expiration days is required')
         .int()
         .min(1, 'Password expiration must be between 1 and 3650 days')
         .max(3650, 'Password expiration must be between 1 and 3650 days'),
-
     sessionTimeout: z.coerce.number()
         .min(1, 'Session timeout is required')
         .int()
         .min(1, 'Session timeout must be between 1 and 1440 minutes')
         .max(1440, 'Session timeout must be between 1 and 1440 minutes'),
-
     smtpHost: z.string().min(1, 'SMTP host is required').min(3, 'SMTP host must be at least 3 characters long'),
-    
     smtpPort: z.coerce.number()
         .min(1, 'SMTP port is required')
         .int()
         .min(1, 'SMTP port must be between 1 and 65535')
         .max(65535, 'SMTP port must be between 1 and 65535'),
-
     smtpUser: z.string().min(1, 'SMTP username is required'),
     smtpPass: z.string().min(1, 'SMTP password is required').min(4, 'SMTP password must be at least 4 characters long'),
-
     googleAnalyticsId: z.string().trim().min(1, 'Google Analytics ID cannot contain only spaces').optional().or(z.literal('')),
     paymentGatewayKey: z.string().trim().min(1, 'Payment gateway API key cannot contain only spaces').optional().or(z.literal('')),
     externalApiKey: z.string().trim().min(1, 'External API key cannot contain only spaces').optional().or(z.literal('')),
-
     backupFrequency: z.enum(['daily', 'weekly', 'monthly'], {
         errorMap: () => ({ message: 'Please select a valid backup frequency' }),
     }),

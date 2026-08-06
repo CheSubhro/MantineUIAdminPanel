@@ -6,6 +6,7 @@ import { TrafficChart } from '../features/analytics/components/TrafficChart';
 import { ContentPerformance } from '../features/analytics/components/ContentPerformance';
 import { ActivityLog } from '../features/analytics/components/ActivityLog';
 import { ErrorBoundary, Spinner, CustomSelect } from '../components/common';
+import { validateTimeRange } from '../utils/validators';
 
 export function AnalyticsPage() {
     
@@ -32,12 +33,13 @@ export function AnalyticsPage() {
                 <Group justify="space-between" mb="lg">
                     <Title order={2}>Analytics Dashboard</Title>
                     <CustomSelect
-                        value={timeRange}
-                        onChange={(val) => setTimeRange(val || '7days')}
+                        value={validateTimeRange(timeRange)}
+                        onChange={(val) => setTimeRange(validateTimeRange(val))}
                         data={[
                             { value: '7days', label: 'Last 7 Days' },
                             { value: '30days', label: 'Last 30 Days' },
-                            { value: '1year', label: 'This Year' },
+                            { value: '3months', label: 'Last 3 Months' },
+                            { value: 'year', label: 'This Year' },
                         ]}
                         w={180}
                     />
