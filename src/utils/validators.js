@@ -37,7 +37,7 @@ export function validateTimeRange(timeRange) {
     return validRanges.includes(timeRange) ? timeRange : '7days';
 }
 
-// --- 8. Settings Form Validation ---
+// --- Settings Form Validation ---
 export const settingsFormSchema = z.object({
     siteName: z.string().min(1, 'Site name is required').min(2, 'Site name must be at least 2 characters long'),
     tagline: z.string().min(1, 'Tagline is required').min(3, 'Tagline must be at least 3 characters long'),
@@ -69,7 +69,7 @@ export const settingsFormSchema = z.object({
     }),
 });
 
-// --- 9. Register Form Validation ---
+// --- Register Form Validation ---
 export const registerFormSchema = z.object({
     fullName: z.string().min(1, 'Full name is required').min(2, 'Full name must be at least 2 characters long'),
     username: z.string().min(1, 'Username is required')

@@ -3,6 +3,7 @@ import React, { useState } from 'react';
 import { PasswordInput, FileInput, Stack } from '@mantine/core';
 import { IconUser, IconAt, IconLock, IconPhoto, IconShieldCheck } from '@tabler/icons-react';
 import { Button, Input, CustomSelect } from '../../../components/common';
+import { registerFormSchema, formatZodErrors } from '../../../utils/validators';
 
 export default function RegisterForm({ onSubmit }) {
 
@@ -20,21 +21,17 @@ export default function RegisterForm({ onSubmit }) {
 
     const handleFormSubmit = (e) => {
         e.preventDefault();
-        let newErrors = {};
 
-        if (!formData.fullName) newErrors.fullName = 'Full name is required';
-        if (!formData.username) newErrors.username = 'Username is required';
-        if (!formData.email) newErrors.email = 'Email is required';
-        if (!formData.password) newErrors.password = 'Password is required';
+        const validationErrors = formatZodErrors(registerFormSchema, formData);
 
-        if (Object.keys(newErrors).length > 0) {
-            setErrors(newErrors);
+        if (Object.keys(validationErrors).length > 0) {
+            setErrors(validationErrors);
             return;
         }
 
+        setErrors({});
         onSubmit(formData);
     };
-
     return (
         <form onSubmit={handleFormSubmit}>
             <Stack>
@@ -92,8 +89,8 @@ export default function RegisterForm({ onSubmit }) {
                 />
 
                 <FileInput
-                    label="Cover Image "
-                    placeholder="Upload cover image "
+                    label="Cover Image"
+                    placeholder="Upload cover image"
                     leftSection={<IconPhoto size={16} />}
                     accept="image/png,image/jpeg"
                     onChange={(file) => setFormData({ ...formData, coverImage: file ? URL.createObjectURL(file) : null })}
