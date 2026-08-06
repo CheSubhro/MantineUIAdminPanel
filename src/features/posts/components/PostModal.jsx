@@ -1,5 +1,7 @@
 
-import { useState, useEffect } from 'react';
+import React, { useEffect } from 'react';
+import { useForm, Controller } from 'react-hook-form';
+import { zodResolver } from '@hookform/resolvers/zod';
 import { Stack, Group, Text, Avatar, FileButton, Box } from '@mantine/core';
 import { IconUpload } from '@tabler/icons-react';
 import { useEditor, EditorContent } from '@tiptap/react';
@@ -11,7 +13,7 @@ import {
     Button,
     ErrorBoundary
 } from '../../../components/common';
-import { postFormSchema, formatZodErrors } from '../../../utils/validators';
+import { postFormSchema } from '../../../utils/validators';
 
 function PostModalContent({
     isOpen,
@@ -20,27 +22,40 @@ function PostModalContent({
     postToEdit = null,
     categories = []
 }) {
-    const [formData, setFormData] = useState({
-        title: '',
-        slug: '',
-        excerpt: '',
-        content: '',
-        category: 'Technology',
-        author: 'Subhro Mondal',
-        image: null,
-        existingImage: '',
-        status: 'Published',
+    const {
+        register,
+        handleSubmit,
+        control,
+        setValue,
+        watch,
+        reset,
+        formState: { errors },
+    } = useForm({
+        resolver: zodResolver(postFormSchema),
+        defaultValues: {
+            title: '',
+            slug: '',
+            excerpt: '',
+            content: '',
+            category: 'Technology',
+            author: 'Subhro Mondal',
+            image: null,
+            existingImage: '',
+            status: 'Published',
+        },
     });
 
-    const [errors, setErrors] = useState({});
+    const watchedTitle = watch('title');
+    const watchedImage = watch('image');
+    const watchedExistingImage = watch('existingImage');
 
-    // Tiptap Editor Hook Setup
+    // Tiptap Editor Hook Setup with RHF integration
     const editor = useEditor({
         extensions: [StarterKit],
-        content: formData.content,
+        content: '',
         onUpdate: ({ editor }) => {
             const html = editor.getHTML();
-            setFormData((prev) => ({ ...prev, content: html }));
+            setValue('content', html, { shouldValidate: true });
         },
         editorProps: {
             attributes: {
@@ -64,7 +79,7 @@ function PostModalContent({
 
     useEffect(() => {
         if (postToEdit) {
-            setFormData({
+            reset({
                 id: postToEdit.id,
                 title: postToEdit.title || '',
                 slug: postToEdit.slug || '',
@@ -80,7 +95,7 @@ function PostModalContent({
                 editor.commands.setContent(postToEdit.content);
             }
         } else {
-            setFormData({
+            reset({
                 title: '',
                 slug: '',
                 excerpt: '',
@@ -95,53 +110,34 @@ function PostModalContent({
                 editor.commands.setContent('');
             }
         }
-        setErrors({});
-    }, [postToEdit, isOpen, editor]);
+    }, [postToEdit, isOpen, editor, reset]);
 
-    const handleChange = (field, value) => {
-        setFormData((prev) => {
-            const updated = { ...prev, [field]: value };
-            if (field === 'title' && !postToEdit) {
-                updated.slug = value
-                    .toLowerCase()
-                    .replace(/[^a-z0-9]+/g, '-')
-                    .replace(/(^-|-$)/g, '');
-            }
-            return updated;
-        });
-
-        if (errors[field]) {
-            setErrors((prev) => ({ ...prev, [field]: null }));
+    // Auto-generate slug from title if creating a new post
+    useEffect(() => {
+        if (!postToEdit && watchedTitle) {
+            const generatedSlug = watchedTitle
+                .toLowerCase()
+                .replace(/[^a-z0-9]+/g, '-')
+                .replace(/(^-|-$)/g, '');
+            setValue('slug', generatedSlug, { shouldValidate: true });
         }
-    };
+    }, [watchedTitle, postToEdit, setValue]);
 
     const handleFileChange = (file) => {
         if (file) {
             const fileUrl = URL.createObjectURL(file);
-            setFormData((prev) => ({
-                ...prev,
-                image: file,
-                existingImage: fileUrl,
-            }));
+            setValue('image', file);
+            setValue('existingImage', fileUrl);
         }
     };
 
-    const validate = () => {
-        const validationErrors = formatZodErrors(postFormSchema, formData);
-        setErrors(validationErrors);
-        return Object.keys(validationErrors).length === 0;
-    };
-
-    const handleSubmit = (e) => {
-        e.preventDefault();
-        if (validate()) {
-            const payload = {
-                ...formData,
-                image: formData.image ? URL.createObjectURL(formData.image) : formData.existingImage
-            };
-            onSave(payload);
-            onClose();
-        }
+    const handleFormSubmit = (data) => {
+        const payload = {
+            ...data,
+            image: data.image ? URL.createObjectURL(data.image) : data.existingImage
+        };
+        onSave(payload);
+        onClose();
     };
 
     return (
@@ -151,51 +147,60 @@ function PostModalContent({
             title={postToEdit ? 'Edit Blog Post' : 'Add New Blog Post'}
             size="lg"
         >
-            <form onSubmit={handleSubmit}>
+            <form onSubmit={handleSubmit(handleFormSubmit)}>
                 <Stack gap="md">
                     <Input
                         label="Post Title"
                         placeholder="e.g. Mastering React and Vite"
-                        value={formData.title}
-                        onChange={(e) => handleChange('title', e.target.value)}
-                        error={errors.title}
+                        error={errors.title?.message}
                         required
+                        {...register('title')}
                     />
 
                     <Input
                         label="Slug"
                         placeholder="e.g. mastering-react-and-vite"
-                        value={formData.slug}
-                        onChange={(e) => handleChange('slug', e.target.value)}
-                        error={errors.slug}
+                        error={errors.slug?.message}
                         required
+                        {...register('slug')}
                     />
 
                     <Group grow preventGrowOverflow={false}>
-                        <CustomSelect
-                            label="Category"
-                            placeholder="Select category"
-                            data={categoryOptions}
-                            value={formData.category}
-                            onChange={(value) => handleChange('category', value)}
+                        <Controller
+                            name="category"
+                            control={control}
+                            render={({ field }) => (
+                                <CustomSelect
+                                    label="Category"
+                                    placeholder="Select category"
+                                    data={categoryOptions}
+                                    value={field.value}
+                                    onChange={field.onChange}
+                                />
+                            )}
                         />
 
-                        <CustomSelect
-                            label="Status"
-                            placeholder="Select status"
-                            data={statusOptions}
-                            value={formData.status}
-                            onChange={(value) => handleChange('status', value)}
+                        <Controller
+                            name="status"
+                            control={control}
+                            render={({ field }) => (
+                                <CustomSelect
+                                    label="Status"
+                                    placeholder="Select status"
+                                    data={statusOptions}
+                                    value={field.value}
+                                    onChange={field.onChange}
+                                />
+                            )}
                         />
                     </Group>
 
                     <Input
                         label="Author"
                         placeholder="e.g. Subhro Mondal"
-                        value={formData.author}
-                        onChange={(e) => handleChange('author', e.target.value)}
-                        error={errors.author}
+                        error={errors.author?.message}
                         required
+                        {...register('author')}
                     />
 
                     {/* Featured Image Upload Field */}
@@ -209,11 +214,11 @@ function PostModalContent({
                                     </Button>
                                 )}
                             </FileButton>
-                            {formData.existingImage && (
+                            {watchedExistingImage && (
                                 <Group gap="xs">
-                                    <Avatar src={formData.existingImage} size={40} radius="sm" />
+                                    <Avatar src={watchedExistingImage} size={40} radius="sm" />
                                     <Text size="xs" c="dimmed">
-                                        {formData.image ? formData.image.name : 'Current Image'}
+                                        {watchedImage ? watchedImage.name : 'Current Image'}
                                     </Text>
                                 </Group>
                             )}
@@ -223,9 +228,8 @@ function PostModalContent({
                     <Input
                         label="Excerpt / Short Summary"
                         placeholder="Write a short summary of the post..."
-                        value={formData.excerpt}
-                        onChange={(e) => handleChange('excerpt', e.target.value)}
-                        error={errors.excerpt}
+                        error={errors.excerpt?.message}
+                        {...register('excerpt')}
                     />
 
                     {/* Tiptap Rich Text Editor Box */}
@@ -241,6 +245,11 @@ function PostModalContent({
                         >
                             <EditorContent editor={editor} />
                         </Box>
+                        {errors.content?.message && (
+                            <Text size="xs" c="red" mt={4}>
+                                {errors.content.message}
+                            </Text>
+                        )}
                     </div>
 
                     <Group justify="flex-end" mt="md">
