@@ -123,6 +123,17 @@ export const mediaUploadSchema = z.object({
         .refine((files) => files.every((f) => f.size <= MAX_FILE_SIZE), 'File size exceeds the 5MB limit.'),
 });
 
+// --- SEO Form Validation ---
+export const seoFormSchema = z.object({
+    metaTitle: z.string().max(60, 'Meta title cannot exceed 60 characters').optional().or(z.literal('')),
+    metaDescription: z.string().max(160, 'Meta description cannot exceed 160 characters').optional().or(z.literal('')),
+    focusKeyword: z.string().optional().or(z.literal('')),
+    targetPlatform: z.string().optional().or(z.literal('')),
+    ogTitle: z.string().optional().or(z.literal('')),
+    ogDescription: z.string().optional().or(z.literal('')),
+    ogImage: z.string().url('Invalid image URL format').optional().or(z.literal('')),
+});
+
 export const formatZodErrors = (schema, values) => {
     const result = schema.safeParse(values);
     if (result.success) return {};
