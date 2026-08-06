@@ -11,6 +11,8 @@ import {
     Button,
     ErrorBoundary
 } from '../../../components/common';
+// Zod স্কিমা এবং ফরম্যাট ফাংশন ইমপোর্ট করুন (আপনার পাথ অনুযায়ী ঠিক করে নেবেন)
+import { postFormSchema, formatZodErrors } from '../../../utils/validators';
 
 function PostModalContent({
     isOpen,
@@ -125,13 +127,11 @@ function PostModalContent({
         }
     };
 
+    // Zod ব্যবহার করে ভ্যালিডেশন হ্যান্ডেল করা হচ্ছে
     const validate = () => {
-        const newErrors = {};
-        if (!formData.title.trim()) newErrors.title = 'Post title is required';
-        if (!formData.slug.trim()) newErrors.slug = 'Slug is required';
-        if (!formData.author.trim()) newErrors.author = 'Author name is required';
-        setErrors(newErrors);
-        return Object.keys(newErrors).length === 0;
+        const validationErrors = formatZodErrors(postFormSchema, formData);
+        setErrors(validationErrors);
+        return Object.keys(validationErrors).length === 0;
     };
 
     const handleSubmit = (e) => {
@@ -227,6 +227,7 @@ function PostModalContent({
                         placeholder="Write a short summary of the post..."
                         value={formData.excerpt}
                         onChange={(e) => handleChange('excerpt', e.target.value)}
+                        error={errors.excerpt}
                     />
 
                     {/* Tiptap Rich Text Editor Box */}
