@@ -86,13 +86,13 @@ export const loginFormSchema = z.object({
     password: z.string().min(1, 'Password is required'),
 });
 
-// --- 11. Email Validation Helper ---
+// --- Email Validation Helper ---
 export const isValidEmail = (email) => {
     const result = z.string().email().safeParse(email);
     return result.success;
 };
 
-// --- 12. Media File Validation ---
+// --- Media File Validation ---
 export const ALLOWED_IMAGE_TYPES = ['image/jpeg', 'image/png', 'image/webp'];
 export const MAX_FILE_SIZE = 5 * 1024 * 1024; // 5MB
 
