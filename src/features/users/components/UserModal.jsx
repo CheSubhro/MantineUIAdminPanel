@@ -9,6 +9,8 @@ import {
     ErrorBoundary
 } from '../../../components/common';
 
+import { userFormSchema, formatZodErrors } from '../../../utils/validators';
+
 function UserModalContent({
     isOpen,
     onClose,
@@ -52,15 +54,9 @@ function UserModalContent({
     };
 
     const validate = () => {
-        const newErrors = {};
-        if (!formData.name.trim()) newErrors.name = 'Name is required';
-        if (!formData.email.trim()) {
-            newErrors.email = 'Email is required';
-        } else if (!/\S+@\S+\.\S+/.test(formData.email)) {
-            newErrors.email = 'Invalid email address';
-        }
-        setErrors(newErrors);
-        return Object.keys(newErrors).length === 0;
+        const validationErrors = formatZodErrors(userFormSchema, formData);
+        setErrors(validationErrors);
+        return Object.keys(validationErrors).length === 0;
     };
 
     const handleSubmit = (e) => {
