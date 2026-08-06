@@ -37,25 +37,6 @@ export function validateTimeRange(timeRange) {
     return validRanges.includes(timeRange) ? timeRange : '7days';
 }
 
-// --- 6. Metrics Validation ---
-export const metricsSchema = z.object({
-    totalViews: z.number().nonnegative(),
-    uniqueVisitors: z.number().nonnegative(),
-    totalPosts: z.number().nonnegative(),
-});
-
-export function validateMetrics(metrics) {
-    const result = metricsSchema.safeParse(metrics);
-    return result.success;
-}
-
-// --- 7. Traffic Sources Validation ---
-export function validateTrafficSources(sources) {
-    if (!Array.isArray(sources) || sources.length === 0) return false;
-    const totalPercentage = sources.reduce((sum, item) => sum + (item.percentage || 0), 0);
-    return totalPercentage === 100;
-}
-
 // --- 8. Settings Form Validation ---
 export const settingsFormSchema = z.object({
     siteName: z.string().min(1, 'Site name is required').min(2, 'Site name must be at least 2 characters long'),
