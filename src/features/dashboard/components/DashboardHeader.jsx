@@ -2,6 +2,7 @@
 import React from 'react';
 import { Group, Title, Text, Button, Select, Badge } from '@mantine/core';
 import { IconPlus } from '@tabler/icons-react';
+import { validateTimeRange } from '../../../utils/validators';
 
 export default function DashboardHeader({
     title = "Dashboard Overview",
@@ -32,8 +33,8 @@ export default function DashboardHeader({
             <Group gap="sm">
                 {/* Time Range Filter Dropdown */}
                 <Select
-                    value={timeRange}
-                    onChange={onTimeRangeChange}
+                    value={validateTimeRange(timeRange)}
+                    onChange={(val) => onTimeRangeChange(validateTimeRange(val))}
                     defaultValue="7days"
                     data={[
                         { value: '7days', label: 'Last 7 Days' },

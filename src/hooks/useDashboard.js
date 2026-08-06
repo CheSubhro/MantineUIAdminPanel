@@ -1,8 +1,10 @@
 
 import { useState, useEffect } from 'react';
+import { validateTimeRange } from '../utils/validators'; 
 
 export const useDashboard = () => {
-    
+    const [timeRange, setTimeRange] = useState('7days');
+
     const [metrics, setMetrics] = useState({
         totalViews: 45230,
         uniqueVisitors: 12450,
@@ -76,7 +78,27 @@ export const useDashboard = () => {
     const [loading, setLoading] = useState(false);
 
     useEffect(() => {
-    }, []);
+        const validRange = validateTimeRange(timeRange);
+        setLoading(true);
+
+        const timer = setTimeout(() => {
+            let multiplier = 1;
+            if (validRange === '30days') multiplier = 3.5;
+            if (validRange === '3months') multiplier = 9;
+            if (validRange === 'year') multiplier = 35;
+
+            setMetrics({
+                totalViews: Math.round(45230 * multiplier),
+                uniqueVisitors: Math.round(12450 * multiplier),
+                totalPosts: 24,
+                totalUsers: 142
+            });
+
+            setLoading(false);
+        }, 300);
+
+        return () => clearTimeout(timer);
+    }, [timeRange]);
 
     return {
         metrics,
@@ -86,6 +108,8 @@ export const useDashboard = () => {
         recentActivity, 
         categoriesData, 
         topPosts,
+        timeRange,
+        setTimeRange: (val) => setTimeRange(validateTimeRange(val)),
         loading
     };
 };

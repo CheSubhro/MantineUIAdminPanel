@@ -23,6 +23,8 @@ export default function DashboardPage() {
         recentPosts,
         recentActivity,
         recentUsers,
+        timeRange,
+        setTimeRange,
         loading
     } = useDashboard();
 
@@ -47,6 +49,8 @@ export default function DashboardPage() {
                 title="Dashboard Overview"
                 subtitle="Welcome back, here is what’s happening with your CMS today."
                 onNewPost={handleNewPost}
+                timeRange={timeRange}
+                onTimeRangeChange={setTimeRange}
             />
 
             {/* Metric Cards */}
