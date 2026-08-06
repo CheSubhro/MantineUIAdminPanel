@@ -31,7 +31,12 @@ export const pageFormSchema = z.object({
     excerpt: z.string().max(300, 'Excerpt cannot exceed 300 characters').optional().or(z.literal('')),
 });
 
-// --- 5. Time Range Validation ---
+// --- 5. Comment Reply Form Validation ---
+export const commentReplySchema = z.object({
+    replyText: z.string().min(1, 'Reply text is required').min(2, 'Reply must be at least 2 characters long'),
+});
+
+// --- 6. Time Range Validation ---
 export function validateTimeRange(timeRange) {
     const validRanges = ['7days', '30days', '3months', 'year'];
     return validRanges.includes(timeRange) ? timeRange : '7days';
@@ -114,7 +119,7 @@ export const formatZodErrors = (schema, values) => {
     if (result.success) return {};
 
     const errors = {};
-    result.error.issues.forEach((issue) => {
+    result.error.issues.issues.forEach((issue) => {
         const path = issue.path[0];
         if (path && !errors[path]) {
             errors[path] = issue.message;
